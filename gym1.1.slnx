@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="clientes/clientes.csproj" Id="0fda8564-fe8d-40d3-8542-d2c826e690fb" />
+  <Project Path="conexxion/conexxion.csproj" Id="372b5312-a6ee-4bca-8a94-d91230610d44" />
+  <Project Path="gym1.1/gym1.1.csproj" Id="8f3da47e-4b23-43cb-a95d-f196895b33f2" />
+</Solution>
