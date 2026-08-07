@@ -17,4 +17,7 @@ public class Clientes
     public DateTime FechaNacimiento { get; set; }
 
     public TipoPlan Planpago { get; set; }
+
+
 }
+

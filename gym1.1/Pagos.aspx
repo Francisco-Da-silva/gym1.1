@@ -140,16 +140,15 @@
                 </div>
             </div>
 
-            <!-- Fecha desde -->
+            <!-- Periodo -->
             <div class="col-md-3">
-                <label class="form-label">Desde</label>
-                <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control" TextMode="Date" />
+                <label class="form-label">Mes a pagar</label>
+                <asp:DropDownList ID="ddlMesPago" runat="server" CssClass="form-select" />
             </div>
 
-            <!-- Fecha hasta -->
             <div class="col-md-3">
-                <label class="form-label">Hasta (vencimiento)</label>
-                <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control" TextMode="Date" />
+                <label class="form-label">Año</label>
+                <asp:DropDownList ID="ddlAnioPago" runat="server" CssClass="form-select" />
             </div>
 
             <!-- Monto -->
@@ -286,7 +285,8 @@
             const selectedId = document.getElementById('<%= hdnIdClienteSeleccionado.ClientID %>');
             const selectedText = document.getElementById('<%= hdnTextoClienteSeleccionado.ClientID %>');
             const postBackTarget = '<%= btnSeleccionarCliente.UniqueID %>';
-            const clients = <%= ClientesJson %>;
+            const clients = <%= ClientesJson %>
+            ;
 
             if (!searchInput || !suggestions || !resultCount || !emptyState || !selectedId || !selectedText) {
                 return;

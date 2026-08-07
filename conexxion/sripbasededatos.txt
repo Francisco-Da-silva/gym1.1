@@ -264,3 +264,677 @@ BEGIN
     VALUES (@IdCliente, CAST(GETDATE() AS DATE), @FechaDesde, @FechaHasta, @Monto, @Observacion);
 END
 GO
+
+
+CREATE TABLE Gimnasios (
+    IdGimnasio INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    Telefono NVARCHAR(30),
+    FechaAlta DATETIME NOT NULL DEFAULT GETDATE(),
+    Activo BIT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE Usuarios (
+    IdUsuario INT IDENTITY(1,1) PRIMARY KEY,
+    IdGimnasio INT NOT NULL,
+    Nombre NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Rol NVARCHAR(30) NOT NULL,
+    Activo BIT NOT NULL DEFAULT 1,
+
+    FOREIGN KEY (IdGimnasio) REFERENCES Gimnasios(IdGimnasio)
+);
+
+
+ALTER TABLE Clientes
+ADD IdGimnasio INT NULL;
+
+
+
+ALTER TABLE Clientes
+ADD CONSTRAINT FK_Clientes_Gimnasios
+FOREIGN KEY (IdGimnasio) REFERENCES Gimnasios(IdGimnasio);
+
+ALTER TABLE Pagos
+ADD IdGimnasio INT NULL;
+
+ALTER TABLE Pagos
+ADD CONSTRAINT FK_Pagos_Gimnasios
+FOREIGN KEY (IdGimnasio) REFERENCES Gimnasios(IdGimnasio);
+
+USE GYM_DB;
+GO
+
+INSERT INTO dbo.Gimnasios
+(
+    Nombre,
+    Email,
+    Telefono
+)
+VALUES
+(
+    'Gimnasio Principal',
+    'administracion@gym.com',
+    NULL
+);
+GO
+
+
+UPDATE dbo.Clientes
+SET IdGimnasio = 1
+WHERE IdGimnasio IS NULL;
+GO
+
+ALTER TABLE dbo.Clientes
+ALTER COLUMN IdGimnasio INT NOT NULL;
+GO
+
+
+UPDATE p
+SET p.IdGimnasio = c.IdGimnasio
+FROM dbo.Pagos p
+INNER JOIN dbo.Clientes c
+    ON c.IdCliente = p.IdCliente
+WHERE p.IdGimnasio IS NULL;
+GO
+
+
+ALTER TABLE dbo.Pagos
+ALTER COLUMN IdGimnasio INT NOT NULL;
+GO
+
+
+ALTER TABLE dbo.Usuarios
+ADD PasswordSalt NVARCHAR(255) NULL;
+GO
+
+ALTER TABLE dbo.Usuarios
+ADD CONSTRAINT UQ_Usuarios_Email UNIQUE (Email);
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Listar_Clientes
+    @IdGimnasio INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        IdCliente,
+        Nombre,
+        Apellido,
+        DNI,
+        Telefono,
+        Email,
+        FechaNacimiento,
+        PlanPago,
+        IdGimnasio
+    FROM dbo.Clientes
+    WHERE IdGimnasio = @IdGimnasio
+    ORDER BY Apellido, Nombre;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.Agregar_Cliente
+    @IdGimnasio INT,
+    @Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+    @DNI NVARCHAR(20),
+    @Telefono NVARCHAR(30) = NULL,
+    @Email NVARCHAR(100) = NULL,
+    @FechaNacimiento DATE,
+    @PlanPago NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Gimnasios
+        WHERE IdGimnasio = @IdGimnasio
+          AND Activo = 1
+    )
+    BEGIN
+        THROW 50001, 'El gimnasio no existe o está inactivo.', 1;
+    END;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM dbo.Clientes
+        WHERE IdGimnasio = @IdGimnasio
+          AND DNI = @DNI
+    )
+    BEGIN
+        THROW 50002, 'Ya existe un cliente con ese DNI en este gimnasio.', 1;
+    END;
+
+    INSERT INTO dbo.Clientes
+    (
+        IdGimnasio,
+        Nombre,
+        Apellido,
+        DNI,
+        Telefono,
+        Email,
+        FechaNacimiento,
+        PlanPago
+    )
+    VALUES
+    (
+        @IdGimnasio,
+        @Nombre,
+        @Apellido,
+        @DNI,
+        @Telefono,
+        @Email,
+        @FechaNacimiento,
+        @PlanPago
+    );
+END
+GO
+
+USE GYM_DB;
+GO
+
+ALTER TABLE dbo.Usuarios
+ADD PasswordSalt NVARCHAR(255) NULL;
+GO
+
+
+
+USE GYM_DB;
+GO
+
+IF OBJECT_ID('dbo.PasswordResetTokens', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.PasswordResetTokens
+    (
+        IdToken INT IDENTITY(1,1) PRIMARY KEY,
+        IdUsuario INT NOT NULL,
+        TokenHash NVARCHAR(100) NOT NULL,
+        FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+        FechaVencimiento DATETIME NOT NULL,
+        Utilizado BIT NOT NULL DEFAULT 0,
+
+        CONSTRAINT FK_PasswordResetTokens_Usuarios
+            FOREIGN KEY (IdUsuario)
+            REFERENCES dbo.Usuarios(IdUsuario)
+    );
+
+    CREATE INDEX IX_PasswordResetTokens_TokenHash
+    ON dbo.PasswordResetTokens(TokenHash);
+END;
+GO
+
+IF NOT EXISTS
+(
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = 'UQ_Usuarios_Email'
+      AND object_id = OBJECT_ID('dbo.Usuarios')
+)
+BEGIN
+    CREATE UNIQUE INDEX UQ_Usuarios_Email
+    ON dbo.Usuarios(Email);
+END;
+GO
+
+USE GYM_DB;
+GO
+
+ALTER PROCEDURE dbo.Listar_Deudores
+    @IdGimnasio INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH UltimoPago AS
+    (
+        SELECT
+            c.IdCliente,
+            c.IdGimnasio,
+            c.DNI,
+            c.Nombre,
+            c.Apellido,
+            c.Telefono,
+            c.Email,
+            c.PlanPago,
+            MAX(p.FechaHasta) AS Vencimiento
+        FROM dbo.Clientes c
+        LEFT JOIN dbo.Pagos p
+            ON p.IdCliente = c.IdCliente
+            AND p.IdGimnasio = @IdGimnasio
+        WHERE c.IdGimnasio = @IdGimnasio
+        GROUP BY
+            c.IdCliente,
+            c.IdGimnasio,
+            c.DNI,
+            c.Nombre,
+            c.Apellido,
+            c.Telefono,
+            c.Email,
+            c.PlanPago
+    )
+    SELECT
+        IdCliente,
+        IdGimnasio,
+        DNI,
+        Nombre,
+        Apellido,
+        Telefono,
+        Email,
+        PlanPago,
+        Vencimiento,
+        CASE
+            WHEN Vencimiento IS NULL THEN 'SIN PAGO'
+            WHEN Vencimiento < CAST(GETDATE() AS DATE) THEN 'VENCIDO'
+            WHEN DATEDIFF(
+                DAY,
+                CAST(GETDATE() AS DATE),
+                Vencimiento
+            ) <= 5 THEN 'POR VENCER'
+            ELSE 'AL DÍA'
+        END AS EstadoPago
+    FROM UltimoPago
+    WHERE Vencimiento IS NULL
+       OR Vencimiento < CAST(GETDATE() AS DATE)
+       OR DATEDIFF(
+            DAY,
+            CAST(GETDATE() AS DATE),
+            Vencimiento
+       ) <= 5
+    ORDER BY
+        CASE
+            WHEN Vencimiento IS NULL THEN 0
+            WHEN Vencimiento < CAST(GETDATE() AS DATE) THEN 1
+            ELSE 2
+        END,
+        Apellido,
+        Nombre;
+END;
+GO
+
+
+ALTER PROCEDURE dbo.Listar_Deudores
+    @IdGimnasio INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH UltimoPago AS
+    (
+        SELECT
+            c.IdCliente,
+            c.IdGimnasio,
+            c.DNI,
+            c.Nombre,
+            c.Apellido,
+            c.Telefono,
+            c.Email,
+            c.PlanPago,
+            c.FechaAlta,
+            MAX(p.FechaHasta) AS Vencimiento
+        FROM dbo.Clientes AS c
+        LEFT JOIN dbo.Pagos AS p
+            ON p.IdCliente = c.IdCliente
+           AND p.IdGimnasio = c.IdGimnasio
+        WHERE c.IdGimnasio = @IdGimnasio
+        GROUP BY
+            c.IdCliente,
+            c.IdGimnasio,
+            c.DNI,
+            c.Nombre,
+            c.Apellido,
+            c.Telefono,
+            c.Email,
+            c.PlanPago,
+            c.FechaAlta
+    )
+    SELECT
+        IdCliente,
+        IdGimnasio,
+        DNI,
+        Nombre,
+        Apellido,
+        Telefono,
+        Email,
+        PlanPago,
+        FechaAlta,
+        Vencimiento,
+        CASE
+            WHEN Vencimiento IS NULL THEN 'SIN PAGO'
+            WHEN Vencimiento < CAST(GETDATE() AS DATE)
+                THEN 'VENCIDO'
+            WHEN DATEDIFF(
+                DAY,
+                CAST(GETDATE() AS DATE),
+                Vencimiento
+            ) <= 5
+                THEN 'POR VENCER'
+            ELSE 'AL DÍA'
+        END AS EstadoPago
+    FROM UltimoPago
+    WHERE Vencimiento IS NULL
+       OR Vencimiento < CAST(GETDATE() AS DATE)
+       OR DATEDIFF(
+            DAY,
+            CAST(GETDATE() AS DATE),
+            Vencimiento
+       ) <= 5
+    ORDER BY Apellido, Nombre;
+END;
+GO
+
+
+
+
+
+ALTER PROCEDURE dbo.Marcar_Pago_Mes
+    @IdGimnasio INT,
+    @IdCliente INT,
+    @FechaDesde DATE,
+    @FechaHasta DATE,
+    @Monto DECIMAL(10,2),
+    @Observacion NVARCHAR(200) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Clientes
+        WHERE IdCliente = @IdCliente
+          AND IdGimnasio = @IdGimnasio
+    )
+    BEGIN
+        THROW 50001,
+            'El cliente no pertenece al gimnasio autenticado.',
+            1;
+    END;
+
+    IF @FechaHasta < @FechaDesde
+    BEGIN
+        THROW 50002,
+            'La fecha Hasta no puede ser menor que la fecha Desde.',
+            1;
+    END;
+
+    INSERT INTO dbo.Pagos
+    (
+        IdGimnasio,
+        IdCliente,
+        FechaPago,
+        FechaDesde,
+        FechaHasta,
+        Monto,
+        Observacion
+    )
+    VALUES
+    (
+        @IdGimnasio,
+        @IdCliente,
+        CAST(GETDATE() AS DATE),
+        @FechaDesde,
+        @FechaHasta,
+        @Monto,
+        @Observacion
+    );
+END;
+GO
+
+
+ALTER PROCEDURE dbo.Listar_Pagos_Por_Cliente
+    @IdGimnasio INT,
+    @IdCliente INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        p.IdPago,
+        p.IdCliente,
+        p.IdGimnasio,
+        p.FechaPago,
+        p.FechaDesde,
+        p.FechaHasta,
+        p.Monto,
+        p.Observacion,
+        CASE
+            WHEN p.FechaHasta < CAST(GETDATE() AS DATE)
+                THEN 'VENCIDO'
+            WHEN DATEDIFF(
+                    DAY,
+                    CAST(GETDATE() AS DATE),
+                    p.FechaHasta
+                 ) <= 5
+                THEN 'POR VENCER'
+            ELSE 'AL DÍA'
+        END AS EstadoPago
+    FROM dbo.Pagos p
+    INNER JOIN dbo.Clientes c
+        ON c.IdCliente = p.IdCliente
+    WHERE p.IdCliente = @IdCliente
+      AND p.IdGimnasio = @IdGimnasio
+      AND c.IdGimnasio = @IdGimnasio
+    ORDER BY p.FechaHasta DESC;
+END;
+GO
+
+
+ALTER PROCEDURE dbo.Registrar_Pago
+    @IdGimnasio INT,
+    @IdCliente INT,
+    @FechaPago DATETIME,
+    @FechaDesde DATE,
+    @FechaHasta DATE,
+    @Monto DECIMAL(12,2),
+    @Observacion NVARCHAR(200) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Clientes
+        WHERE IdCliente = @IdCliente
+          AND IdGimnasio = @IdGimnasio
+    )
+    BEGIN
+        THROW 50001,
+            'El cliente no pertenece al gimnasio autenticado.',
+            1;
+    END;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM dbo.Pagos
+        WHERE IdCliente = @IdCliente
+          AND IdGimnasio = @IdGimnasio
+          AND YEAR(FechaDesde) = YEAR(@FechaDesde)
+          AND MONTH(FechaDesde) = MONTH(@FechaDesde)
+    )
+    BEGIN
+        THROW 50002,
+            'Ya existe un pago para el período seleccionado.',
+            1;
+    END;
+
+    INSERT INTO dbo.Pagos
+    (
+        IdGimnasio,
+        IdCliente,
+        FechaPago,
+        FechaDesde,
+        FechaHasta,
+        Monto,
+        Observacion
+    )
+    VALUES
+    (
+        @IdGimnasio,
+        @IdCliente,
+        @FechaPago,
+        @FechaDesde,
+        @FechaHasta,
+        @Monto,
+        @Observacion
+    );
+END;
+GO
+
+
+
+
+ALTER PROCEDURE dbo.Agregar_Cliente
+    @IdGimnasio INT,
+    @Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+    @DNI NVARCHAR(20),
+    @Telefono NVARCHAR(30) = NULL,
+    @Email NVARCHAR(100) = NULL,
+    @FechaNacimiento DATE,
+    @PlanPago NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- 50002: gimnasio inexistente o inactivo
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Gimnasios
+        WHERE IdGimnasio = @IdGimnasio
+          AND Activo = 1
+    )
+    BEGIN
+        THROW 50002,
+            'El gimnasio no existe o se encuentra inactivo.',
+            1;
+    END;
+
+    -- 50001: DNI duplicado dentro del mismo gimnasio
+    IF EXISTS
+    (
+        SELECT 1
+        FROM dbo.Clientes
+        WHERE IdGimnasio = @IdGimnasio
+          AND DNI = @DNI
+    )
+    BEGIN
+        THROW 50001,
+            'Ya existe un cliente con ese DNI en este gimnasio.',
+            1;
+    END;
+
+    INSERT INTO dbo.Clientes
+    (
+        IdGimnasio,
+        Nombre,
+        Apellido,
+        DNI,
+        Telefono,
+        Email,
+        FechaNacimiento,
+        PlanPago
+    )
+    VALUES
+    (
+        @IdGimnasio,
+        @Nombre,
+        @Apellido,
+        @DNI,
+        @Telefono,
+        @Email,
+        @FechaNacimiento,
+        @PlanPago
+    );
+END;
+GO
+
+
+ALTER PROCEDURE dbo.Agregar_Cliente
+    @IdGimnasio INT,
+    @Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+    @DNI NVARCHAR(20),
+    @Telefono NVARCHAR(30) = NULL,
+    @Email NVARCHAR(100) = NULL,
+    @FechaNacimiento DATE,
+    @PlanPago NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SET @DNI = LTRIM(RTRIM(@DNI));
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Gimnasios
+        WHERE IdGimnasio = @IdGimnasio
+          AND Activo = 1
+    )
+    BEGIN
+        THROW 50002,
+            'El gimnasio no existe o se encuentra inactivo.',
+            1;
+    END;
+
+    IF @DNI LIKE '%[^0-9]%'
+    BEGIN
+        THROW 50003,
+            'El DNI solo puede contener números.',
+            1;
+    END;
+
+    IF LEN(@DNI) < 7 OR LEN(@DNI) > 8
+    BEGIN
+        THROW 50004,
+            'El DNI debe tener entre 7 y 8 dígitos.',
+            1;
+    END;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM dbo.Clientes
+        WHERE IdGimnasio = @IdGimnasio
+          AND DNI = @DNI
+    )
+    BEGIN
+        THROW 50001,
+            'Ya existe un cliente con ese DNI en este gimnasio.',
+            1;
+    END;
+
+    INSERT INTO dbo.Clientes
+    (
+        IdGimnasio,
+        Nombre,
+        Apellido,
+        DNI,
+        Telefono,
+        Email,
+        FechaNacimiento,
+        PlanPago
+    )
+    VALUES
+    (
+        @IdGimnasio,
+        @Nombre,
+        @Apellido,
+        @DNI,
+        @Telefono,
+        @Email,
+        @FechaNacimiento,
+        @PlanPago
+    );
+END;
+GO
+

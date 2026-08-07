@@ -1,21 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Web;
-using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web.Security;
-using System.Web.SessionState;
+
 
 namespace gym1._1
 {
     public class Global : HttpApplication
     {
-        void Application_Start(object sender, EventArgs e)
+        protected void Application_Start(object sender, EventArgs e)
         {
-            // Código que se ejecuta al iniciar la aplicación
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        protected void Application_Error(
+            object sender,
+            EventArgs e)
+        {
+            Exception exception =
+                Server.GetLastError();
+
+            if (exception == null)
+            {
+                return;
+            }
+
+            string codigoError =
+                Guid.NewGuid()
+                    .ToString("N")
+                    .Substring(0, 8)
+                    .ToUpper();
+
+            // Mientras desarrollamos, el error aparece
+            // en la ventana Output de Visual Studio.
+            Trace.TraceError(
+                "Código: {0} | Error: {1}",
+                codigoError,
+                exception);
+
+            Server.ClearError();
+
+            string rutaError =
+                "~/Error.aspx?codigo=" +
+                HttpUtility.UrlEncode(codigoError);
+
+            Response.Redirect(rutaError, false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }

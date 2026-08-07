@@ -6,23 +6,35 @@ using System.Data;
 using System.Data.SqlClient;
 
 
+
 namespace Conexxion
 {
     public static class DeudoresDAL
     {
-        private static string connectionString =
-            ConfigurationManager.ConnectionStrings["GymDb"].ConnectionString;
+        private static readonly string connectionString =
+            ConfigurationManager
+                .ConnectionStrings["GymDb"]
+                .ConnectionString;
 
-        public static DataTable ListarDeudores()
+        public static DataTable ListarDeudores(int idGimnasio)
         {
             DataTable dt = new DataTable();
 
-            using (SqlConnection con = new SqlConnection(connectionString))
-            using (SqlCommand cmd = new SqlCommand("Listar_Deudores", con))
+            using (SqlConnection con =
+                   new SqlConnection(connectionString))
+            using (SqlCommand cmd =
+                   new SqlCommand("Listar_Deudores", con))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandType =
+                    CommandType.StoredProcedure;
 
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                cmd.Parameters.Add(
+                    "@IdGimnasio",
+                    SqlDbType.Int
+                ).Value = idGimnasio;
+
+                using (SqlDataAdapter da =
+                       new SqlDataAdapter(cmd))
                 {
                     da.Fill(dt);
                 }
@@ -32,26 +44,59 @@ namespace Conexxion
         }
 
         public static void MarcarPagoMes(
+            int idGimnasio,
             int idCliente,
             DateTime desde,
             DateTime hasta,
             decimal monto,
-            string observacion
-        )
+            string observacion)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            using (SqlCommand cmd = new SqlCommand("Marcar_Pago_Mes", con))
+            using (SqlConnection con =
+                   new SqlConnection(connectionString))
+            using (SqlCommand cmd =
+                   new SqlCommand("Marcar_Pago_Mes", con))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandType =
+                    CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@IdCliente", idCliente);
-                cmd.Parameters.AddWithValue("@FechaDesde", desde.Date);
-                cmd.Parameters.AddWithValue("@FechaHasta", hasta.Date);
-                cmd.Parameters.AddWithValue("@Monto", monto);
-                cmd.Parameters.AddWithValue("@Observacion",
+                cmd.Parameters.Add(
+                    "@IdGimnasio",
+                    SqlDbType.Int
+                ).Value = idGimnasio;
+
+                cmd.Parameters.Add(
+                    "@IdCliente",
+                    SqlDbType.Int
+                ).Value = idCliente;
+
+                cmd.Parameters.Add(
+                    "@FechaDesde",
+                    SqlDbType.Date
+                ).Value = desde.Date;
+
+                cmd.Parameters.Add(
+                    "@FechaHasta",
+                    SqlDbType.Date
+                ).Value = hasta.Date;
+
+                SqlParameter parametroMonto =
+                    cmd.Parameters.Add(
+                        "@Monto",
+                        SqlDbType.Decimal
+                    );
+
+                parametroMonto.Precision = 10;
+                parametroMonto.Scale = 2;
+                parametroMonto.Value = monto;
+
+                cmd.Parameters.Add(
+                    "@Observacion",
+                    SqlDbType.NVarChar,
+                    200
+                ).Value =
                     string.IsNullOrWhiteSpace(observacion)
                         ? (object)DBNull.Value
-                        : observacion);
+                        : observacion.Trim();
 
                 con.Open();
                 cmd.ExecuteNonQuery();

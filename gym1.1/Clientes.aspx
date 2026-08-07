@@ -143,8 +143,8 @@
                     <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
                     <asp:BoundField DataField="Apellido" HeaderText="Apellido" />
                     <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
-                    <asp:BoundField DataField="Email" HeaderText="Email" />
-                    <asp:BoundField DataField="Plan" HeaderText="Plan" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" /> 
+                    <asp:BoundField DataField="PlanPago" HeaderText="Plan" />
                 </Columns>
 
             </asp:GridView>

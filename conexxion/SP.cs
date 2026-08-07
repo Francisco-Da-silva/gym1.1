@@ -18,34 +18,54 @@ namespace Conexxion
 
         // 🔹 INSERTAR CLIENTE
         public static void AgregarCliente(
-            string nombre,
-            string apellido,
-            string dni,
-            string telefono,
-            string email,
-            DateTime fechaNacimiento,
-            string plan)
+     int idGimnasio,
+     string nombre,
+     string apellido,
+     string dni,
+     string telefono,
+     string email,
+     DateTime fechaNacimiento,
+     string planPago)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand("Agregar_Cliente", con))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = nombre;
-                cmd.Parameters.Add("@Apellido", SqlDbType.VarChar).Value = apellido;
-                cmd.Parameters.Add("@DNI", SqlDbType.VarChar).Value = dni;
-                cmd.Parameters.Add("@Telefono", SqlDbType.VarChar).Value = telefono;
-                cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
-                cmd.Parameters.Add("@FechaNacimiento", SqlDbType.Date).Value = fechaNacimiento;
-                cmd.Parameters.Add("@Planpago", SqlDbType.VarChar).Value = plan;
+                cmd.Parameters.Add("@IdGimnasio", SqlDbType.Int).Value =
+                    idGimnasio;
+
+                cmd.Parameters.Add("@Nombre", SqlDbType.NVarChar, 50).Value =
+                    nombre;
+
+                cmd.Parameters.Add("@Apellido", SqlDbType.NVarChar, 50).Value =
+                    apellido;
+
+                cmd.Parameters.Add("@DNI", SqlDbType.NVarChar, 20).Value =
+                    dni;
+
+                cmd.Parameters.Add("@Telefono", SqlDbType.NVarChar, 30).Value =
+                    string.IsNullOrWhiteSpace(telefono)
+                        ? (object)DBNull.Value
+                        : telefono;
+
+                cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value =
+                    string.IsNullOrWhiteSpace(email)
+                        ? (object)DBNull.Value
+                        : email;
+
+                cmd.Parameters.Add("@FechaNacimiento", SqlDbType.Date).Value =
+                    fechaNacimiento.Date;
+
+                cmd.Parameters.Add("@PlanPago", SqlDbType.NVarChar, 30).Value =
+                    planPago;
 
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
         }
-
         // 🔹 LISTAR CLIENTES
-        public static DataTable ListarClientes()
+        public static DataTable ListarClientes(int idGimnasio)
         {
             DataTable dt = new DataTable();
 
@@ -54,11 +74,16 @@ namespace Conexxion
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                cmd.Parameters.Add("@IdGimnasio", SqlDbType.Int).Value =
+                    idGimnasio;
+
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                 {
                     da.Fill(dt);
                 }
             }
+
+            
 
             return dt;
         }
@@ -90,7 +115,7 @@ namespace Conexxion
                 return dt;
             }
 
-            public static bool ExistePagoEnMes(int idCliente, DateTime fechaDesde)
+            public static bool ExistePagoEnMes(int idCliente, DateTime fechaDesde) 
             {
                 using (SqlConnection con = new SqlConnection(connectionString))
                 using (SqlCommand cmd = new SqlCommand(@"

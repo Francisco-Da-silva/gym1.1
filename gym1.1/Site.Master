@@ -185,6 +185,25 @@
 
                     </li>
 
+                     <li class="nav-item mb-1">
+                         <a class="nav-link text-white " runat="server" href="~/CrearAdministrador">
+                             Crear administrador</a>
+
+                     </li>
+
+
+                    <asp:LinkButton
+    ID="btnCerrarSesion"
+    runat="server"
+    CssClass="nav-link"
+    CausesValidation="false"
+    OnClick="btnCerrarSesion_Click">
+
+    <i class="bi bi-box-arrow-right"></i>
+    Cerrar sesión
+
+</asp:LinkButton>
+
                 </ul>
 
                 <div class="mt-auto sidebar-footer">

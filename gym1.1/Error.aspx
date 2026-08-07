@@ -1,19 +1,75 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Error.aspx.cs" Inherits="gym1._1.Error" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true"
+    CodeBehind="Error.aspx.cs"
+    Inherits="gym1._1.Error" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+<!DOCTYPE html>
 
-    <div class="main-card p-4">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <title>Error - Gym Manager</title>
 
-        <h3 class="mb-3 d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-            <span>Ocurrió un problema</span>
-        </h3>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
 
-        <asp:Label ID="lblTitulo" runat="server" CssClass="h5 d-block mb-2"></asp:Label>
-        <asp:Label ID="lblMensaje" runat="server" CssClass="text-secondary d-block mb-4"></asp:Label>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f6f9;
+        }
 
-        <a class="btn btn-success" href="~/Pagos">Volver a Pagos</a>
-    </div>
+        .error-card {
+            max-width: 550px;
+            width: 100%;
+            padding: 35px;
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+            text-align: center;
+        }
 
-</asp:Content>
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+
+        <div class="error-card">
+
+            <div class="error-icon">
+                ⚠️
+            </div>
+
+            <h2>Ocurrió un error</h2>
+
+            <p class="text-muted mt-3">
+                No pudimos completar la operación.
+                Por favor, intentá nuevamente.
+            </p>
+
+            <asp:Label
+                ID="lblCodigoError"
+                runat="server"
+                CssClass="d-block text-muted small mb-4">
+            </asp:Label>
+
+            <asp:Button
+                ID="btnVolver"
+                runat="server"
+                Text="Volver al inicio"
+                CssClass="btn btn-primary"
+                OnClick="btnVolver_Click" />
+
+        </div>
+
+    </form>
+</body>
+</html>

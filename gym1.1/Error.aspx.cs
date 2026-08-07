@@ -1,10 +1,6 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
+using System;
 
 namespace gym1._1
 {
@@ -12,17 +8,30 @@ namespace gym1._1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string titulo = Session["LastErrorTitle"] as string;
-            string mensaje = Session["LastErrorMessage"] as string;
+            Response.Cache.SetNoStore();
 
-            lblTitulo.Text = string.IsNullOrWhiteSpace(titulo) ? "Error" : titulo;
-            lblMensaje.Text = string.IsNullOrWhiteSpace(mensaje)
-                ? "Se produjo un error inesperado."
-                : mensaje;
+            if (!IsPostBack)
+            {
+                string codigo = Request.QueryString["codigo"];
 
-            // opcional: limpiar para que no quede pegado el error
-            Session.Remove("LastErrorTitle");
-            Session.Remove("LastErrorMessage");
+                if (!string.IsNullOrWhiteSpace(codigo))
+                {
+                    lblCodigoError.Text =
+                        "Código de referencia: " + codigo;
+                }
+            }
+        }
+
+        protected void btnVolver_Click(object sender, EventArgs e)
+        {
+            if (Session["IdUsuario"] != null)
+            {
+                Response.Redirect("~/Default.aspx");
+            }
+            else
+            {
+                Response.Redirect("~/Login.aspx");
+            }
         }
     }
 }
