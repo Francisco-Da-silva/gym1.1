@@ -938,3 +938,23 @@ BEGIN
 END;
 GO
 
+USE GYM_DB;
+GO
+
+IF OBJECT_ID('dbo.PasswordResetTokens', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.PasswordResetTokens
+    (
+        IdToken INT IDENTITY(1,1) PRIMARY KEY,
+        IdUsuario INT NOT NULL,
+        TokenHash NVARCHAR(100) NOT NULL,
+        FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+        FechaVencimiento DATETIME NOT NULL,
+        Utilizado BIT NOT NULL DEFAULT 0,
+
+        CONSTRAINT FK_PasswordResetTokens_Usuarios
+            FOREIGN KEY (IdUsuario)
+            REFERENCES dbo.Usuarios(IdUsuario)
+    );
+END;
+GO

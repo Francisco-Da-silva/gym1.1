@@ -119,19 +119,23 @@
                     placeholder="Ingresá tu contraseña" />
             </div>
 
+               <div class="text-end mb-3">
+                   <a href="RecuperarPassword.aspx"
+                      class="text-success text-decoration-none">
+                       ¿Olvidaste tu contraseña?
+                   </a>
+               </div>
+
             <asp:Button ID="btnIngresar"
                 runat="server"
                 Text="Ingresar"
                 CssClass="btn btn-success w-100 py-2"
                 OnClick="btnIngresar_Click" />
 
-        </div>
+</div>
 
-            <a href="RecuperarPassword.aspx"
-              class="text-success text-decoration-none">
-               ¿Olvidaste tu contraseña?
-           </a>
-    </div>
+ </div>
+        
 
 </form>
 </body>
