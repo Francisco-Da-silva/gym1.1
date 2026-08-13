@@ -1,5 +1,4 @@
-﻿using Conexcion;
-using Conexxion;
+﻿using Conexxion;
 using System;
 
 namespace gym1._1
@@ -66,38 +65,51 @@ namespace gym1._1
                         Server.UrlEncode(token);
 
                     EmailService.EnviarRecuperacionPassword(
-                         usuario.Email,
-                         usuario.Nombre,
-                         enlace
+                        usuario.Email,
+                        usuario.Nombre,
+                        enlace
+                    );
                 }
+
                 MostrarMensaje(
                     "Si el correo está registrado, te enviaremos un enlace para restablecer tu contraseña.",
                     "success"
                 );
             }
+
+
             catch (Exception ex)
             {
-                string codigo =
+                string codigoError =
                     Guid.NewGuid()
                         .ToString("N")
                         .Substring(0, 8)
                         .ToUpperInvariant();
 
                 System.Diagnostics.Trace.TraceError(
-                    "Error recuperación contraseña. Código {0}: {1}",
-                    codigo,
+                    "Error recuperación contraseña. Código: {0}. Detalle: {1}",
+                    codigoError,
                     ex
                 );
 
-                Response.Redirect(
-                    "~/Error.aspx?codigo=" +
-                    codigo,
-                    false
+                MostrarMensaje(
+                    "No se pudo completar la operación. Código: " + codigoError,
+                    "danger"
                 );
-
-                Context.ApplicationInstance
-                    .CompleteRequest();
             }
+
+            //catch (Exception ex)
+            //{
+            //    MostrarMensaje(
+            //        "ERROR: " +
+            //        ex.GetType().FullName +
+            //        "<br/>" +
+            //        Server.HtmlEncode(ex.Message),
+            //        "danger"
+            //    );
+            //}
+
+
         }
 
         private void MostrarMensaje(

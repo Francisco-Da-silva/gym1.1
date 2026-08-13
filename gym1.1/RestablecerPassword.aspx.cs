@@ -1,5 +1,4 @@
-﻿using Conexcion;
-using Conexxion;
+﻿using Conexxion;
 using System;
 
 namespace gym1._1

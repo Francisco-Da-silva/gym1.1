@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 
-namespace Conexcion
+namespace Conexxion
 {
     public static class EmailService
     {

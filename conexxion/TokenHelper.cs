@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Conexcion
+namespace Conexxion
 {
     public static class TokenHelper
     {
