@@ -44,12 +44,12 @@
 
 	<system.net>
 		<mailSettings>
-			<smtp from="franciscodasilva678@gmail.com">
+			<smtp from="TU_EMAIL@gmail.com">
 				<network
 				  host="smtp.gmail.com"
 				  port="587"
-				  userName="franciscodasilva678@gmail.com"
-				  password="vdgx lyzv pize pnod"
+				  userName="TU_EMAIL@gmail.com"
+				  password="TU_APP_PASSWORD"
 				  enableSsl="true" />
 			</smtp>
 		</mailSettings>
