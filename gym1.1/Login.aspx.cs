@@ -11,19 +11,6 @@ namespace gym1._1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Evita que el navegador conserve el login en caché.
-
-            if (!IsPostBack)
-            {
-                bool actualizado = UsuarioDAL.CambiarPassword(
-                    "franciscodasilva678@gmai.com",
-                    "Admin1234!"
-                );
-
-                Response.Write(actualizado
-                    ? "Contraseña actualizada."
-                    : "Usuario no encontrado.");
-            }
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetNoStore();
             Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
@@ -33,7 +20,6 @@ namespace gym1._1
             {
                 OcultarError();
 
-                // Si el usuario ya inició sesión, no vuelve al login.
                 if (Session["IdUsuario"] != null &&
                     Session["IdGimnasio"] != null)
                 {

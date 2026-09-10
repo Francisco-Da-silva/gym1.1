@@ -263,7 +263,7 @@
                 <asp:BoundField DataField="FechaHasta" HeaderText="Hasta" DataFormatString="{0:dd/MM/yyyy}" />
                 <asp:BoundField DataField="PeriodoCubierto" HeaderText="Meses cubiertos" />
                 <asp:BoundField DataField="Monto" HeaderText="Monto" DataFormatString="{0:C}" />
-                <asp:BoundField DataField="Observacion" HeaderText="Observación" />
+                <asp:BoundField DataField="Observacion" HeaderText="Observación" HtmlEncode="true"  />
 
                 <asp:TemplateField HeaderText="Registro">
                     <ItemTemplate>

@@ -75,7 +75,10 @@ namespace gym1._1
                     "Si el correo está registrado, te enviaremos un enlace para restablecer tu contraseña.",
                     "success"
                 );
+
             }
+
+
 
 
             catch (Exception ex)
@@ -97,20 +100,21 @@ namespace gym1._1
                     "danger"
                 );
             }
-
-            //catch (Exception ex)
-            //{
-            //    MostrarMensaje(
-            //        "ERROR: " +
-            //        ex.GetType().FullName +
-            //        "<br/>" +
-            //        Server.HtmlEncode(ex.Message),
-            //        "danger"
-            //    );
-            //}
-
-
         }
+
+        //catch (Exception ex)
+        //{
+        //    MostrarMensaje(
+        //        "ERROR: " +
+        //        ex.GetType().FullName +
+        //        "<br/>" +
+        //        Server.HtmlEncode(ex.Message),
+        //        "danger"
+        //    );
+        //}
+
+
+    
 
         private void MostrarMensaje(
             string mensaje,

@@ -96,17 +96,34 @@ namespace Conexxion
                 ConfigurationManager.ConnectionStrings["GymDb"].ConnectionString;
 
             // ✅ LISTAR PAGOS POR CLIENTE
-            public static DataTable ListarPagosPorCliente(int idCliente)
+            public static DataTable ListarPagosPorCliente(
+     int idGimnasio,
+     int idCliente)
             {
                 DataTable dt = new DataTable();
 
-                using (SqlConnection con = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand("Listar_Pagos_Por_Cliente", con))
+                using (SqlConnection con =
+                    new SqlConnection(connectionString))
+                using (SqlCommand cmd =
+                    new SqlCommand(
+                        "Listar_Pagos_Por_Cliente",
+                        con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
+                    cmd.CommandType =
+                        CommandType.StoredProcedure;
 
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    cmd.Parameters.Add(
+                        "@IdGimnasio",
+                        SqlDbType.Int
+                    ).Value = idGimnasio;
+
+                    cmd.Parameters.Add(
+                        "@IdCliente",
+                        SqlDbType.Int
+                    ).Value = idCliente;
+
+                    using (SqlDataAdapter da =
+                        new SqlDataAdapter(cmd))
                     {
                         da.Fill(dt);
                     }
@@ -160,6 +177,50 @@ namespace Conexxion
                     con.Open();
                     cmd.ExecuteNonQuery();
                 }
+            }
+
+        }
+        public static DateTime ObtenerFechaAltaCliente(
+      int idGimnasio,
+      int idCliente)
+        {
+            const string query = @"
+                SELECT FechaAlta
+                FROM dbo.Clientes
+                WHERE IdCliente = @IdCliente
+                  AND IdGimnasio = @IdGimnasio;";
+
+            using (SqlConnection con =
+                new SqlConnection(connectionString))
+            using (SqlCommand cmd =
+                new SqlCommand(query, con))
+            {
+                cmd.Parameters.Add(
+                    "@IdCliente",
+                    SqlDbType.Int
+                ).Value = idCliente;
+
+                cmd.Parameters.Add(
+                    "@IdGimnasio",
+                    SqlDbType.Int
+                ).Value = idGimnasio;
+
+                con.Open();
+
+                object resultado =
+                    cmd.ExecuteScalar();
+
+                if (resultado == null ||
+                    resultado == DBNull.Value)
+                {
+                    throw new Exception(
+                        "No se pudo obtener la fecha de alta del cliente."
+                    );
+                }
+
+                return Convert.ToDateTime(
+                    resultado
+                );
             }
         }
     }

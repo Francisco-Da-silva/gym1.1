@@ -17,7 +17,6 @@ namespace gym1._1
         protected void btnCerrarSesion_Click(object sender, EventArgs e)
         {
             Session.Clear();
-            Session.RemoveAll();
             Session.Abandon();
 
             if (Request.Cookies["ASP.NET_SessionId"] != null)

@@ -686,7 +686,6 @@ BEGIN
 END;
 GO
 
-
 ALTER PROCEDURE dbo.Listar_Pagos_Por_Cliente
     @IdGimnasio INT,
     @IdCliente INT
@@ -717,13 +716,12 @@ BEGIN
     FROM dbo.Pagos p
     INNER JOIN dbo.Clientes c
         ON c.IdCliente = p.IdCliente
+       AND c.IdGimnasio = p.IdGimnasio
     WHERE p.IdCliente = @IdCliente
       AND p.IdGimnasio = @IdGimnasio
-      AND c.IdGimnasio = @IdGimnasio
     ORDER BY p.FechaHasta DESC;
 END;
 GO
-
 
 ALTER PROCEDURE dbo.Registrar_Pago
     @IdGimnasio INT,
@@ -958,3 +956,13 @@ BEGIN
     );
 END;
 GO
+
+
+
+CREATE UNIQUE INDEX UX_Pagos_Gimnasio_Cliente_Periodo
+ON dbo.Pagos
+(
+    IdGimnasio,
+    IdCliente,
+    FechaDesde
+);

@@ -33,22 +33,22 @@ namespace gym1._1
         protected global::System.Web.UI.WebControls.Label lblMsg;
 
         /// <summary>
-        /// Control txtDesde.
+        /// Control ddlMesPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDesde;
+        protected global::System.Web.UI.WebControls.DropDownList ddlMesPago;
 
         /// <summary>
-        /// Control txtHasta.
+        /// Control ddlAnioPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHasta;
+        protected global::System.Web.UI.WebControls.DropDownList ddlAnioPago;
 
         /// <summary>
         /// Control txtMonto.
@@ -67,15 +67,6 @@ namespace gym1._1
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtObs;
-
-        /// <summary>
-        /// Control btnMes.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMes;
 
         /// <summary>
         /// Control gvDeudores.

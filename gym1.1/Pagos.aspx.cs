@@ -210,8 +210,18 @@ namespace gym1._1
                     idCliente
                 );
 
+            DateTime fechaAlta =
+                SP.ObtenerFechaAltaCliente(
+                    IdGimnasioActual,
+                    idCliente
+                );
+
             AgregarPeriodoCubierto(dt);
-            CargarEstadoAnual(dt);
+
+            CargarEstadoAnual(
+                dt,
+                fechaAlta
+            );
 
             gvPagos.DataSource = dt;
             gvPagos.DataBind();
@@ -257,6 +267,7 @@ namespace gym1._1
             else
             {
                 lblEstadoActual.Text = "SIN PAGO";
+
                 lblEstadoActual.CssClass =
                     "badge bg-secondary";
 
@@ -264,10 +275,47 @@ namespace gym1._1
                 lblVencimiento.Text = "-";
 
                 lblMesesAdeudados.Text =
-                    FormatearMes(DateTime.Today);
+                    FormatearMesesAdeudadosDesdeAlta(
+                        fechaAlta
+                    );
             }
         }
 
+
+        private string FormatearMesesAdeudadosDesdeAlta(
+    DateTime fechaAlta)
+        {
+            List<string> meses =
+                new List<string>();
+
+            DateTime inicio =
+                new DateTime(
+                    fechaAlta.Year,
+                    fechaAlta.Month,
+                    1
+                );
+
+            DateTime actual =
+                new DateTime(
+                    DateTime.Today.Year,
+                    DateTime.Today.Month,
+                    1
+                );
+
+            while (inicio <= actual)
+            {
+                meses.Add(
+                    FormatearMes(inicio)
+                );
+
+                inicio =
+                    inicio.AddMonths(1);
+            }
+
+            return meses.Count > 0
+                ? string.Join(", ", meses)
+                : "-";
+        }
         private string ObtenerClaseEstado(string estado)
         {
             switch ((estado ?? "")
@@ -290,10 +338,13 @@ namespace gym1._1
         }
 
         private void CargarEstadoAnual(
-            DataTable pagos)
+    DataTable pagos,
+    DateTime fechaAlta)
         {
-            int anio = DateTime.Today.Year;
+            int anioActual = DateTime.Today.Year;
+            int mesActual = DateTime.Today.Month;
 
+            // Guardamos los meses pagados
             HashSet<int> mesesPagados =
                 new HashSet<int>();
 
@@ -302,89 +353,126 @@ namespace gym1._1
                 foreach (DataRow row in pagos.Rows)
                 {
                     if (row["FechaDesde"] == DBNull.Value)
-                    {
                         continue;
-                    }
 
-                    DateTime desde =
+                    DateTime fechaDesde =
                         Convert.ToDateTime(
                             row["FechaDesde"]
                         );
 
-                    if (desde.Year == anio)
+                    if (fechaDesde.Year == anioActual)
                     {
                         mesesPagados.Add(
-                            desde.Month
+                            fechaDesde.Month
                         );
                     }
                 }
             }
 
-            DataTable resumen =
+            DataTable dtEstado =
                 new DataTable();
 
-            resumen.Columns.Add(
+            dtEstado.Columns.Add(
                 "Anio",
                 typeof(int)
             );
 
-            string[] columnasMeses =
+            string[] columnas =
             {
-                "Enero",
-                "Febrero",
-                "Marzo",
-                "Abril",
-                "Mayo",
-                "Junio",
-                "Julio",
-                "Agosto",
-                "Septiembre",
-                "Octubre",
-                "Noviembre",
-                "Diciembre"
-            };
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
 
-            foreach (string columna in columnasMeses)
+            foreach (string columna in columnas)
             {
-                resumen.Columns.Add(
+                dtEstado.Columns.Add(
                     columna,
                     typeof(string)
                 );
             }
 
             DataRow fila =
-                resumen.NewRow();
+                dtEstado.NewRow();
 
-            fila["Anio"] = anio;
+            fila["Anio"] =
+                anioActual;
 
-            for (int i = 0;
-                 i < columnasMeses.Length;
-                 i++)
+            // Primer día del mes en el que
+            // el cliente fue dado de alta
+            DateTime mesFechaAlta =
+                new DateTime(
+                    fechaAlta.Year,
+                    fechaAlta.Month,
+                    1
+                );
+
+            for (int mes = 1;
+                 mes <= 12;
+                 mes++)
             {
-                int mes = i + 1;
+                DateTime fechaMes =
+                    new DateTime(
+                        anioActual,
+                        mes,
+                        1
+                    );
 
-                if (mesesPagados.Contains(mes))
+                string estado;
+
+                // ==========================================
+                // ANTES DEL ALTA
+                // ==========================================
+                if (fechaMes < mesFechaAlta)
                 {
-                    fila[columnasMeses[i]] =
+                    estado =
+                        "No aplica";
+                }
+
+                // ==========================================
+                // MES PAGADO
+                // ==========================================
+                else if (mesesPagados.Contains(mes))
+                {
+                    estado =
                         "Pagado";
                 }
-                else if (mes <=
-                         DateTime.Today.Month)
+
+                // ==========================================
+                // MES ACTUAL O ANTERIOR SIN PAGO
+                // ==========================================
+                else if (mes <= mesActual)
                 {
-                    fila[columnasMeses[i]] =
+                    estado =
                         "No pago";
                 }
+
+                // ==========================================
+                // MES FUTURO
+                // ==========================================
                 else
                 {
-                    fila[columnasMeses[i]] =
+                    estado =
                         "Pendiente";
                 }
+
+                fila[columnas[mes - 1]] =
+                    estado;
             }
 
-            resumen.Rows.Add(fila);
+            dtEstado.Rows.Add(fila);
 
             gvEstadoAnual.DataSource =
-                resumen;
+                dtEstado;
 
             gvEstadoAnual.DataBind();
         }

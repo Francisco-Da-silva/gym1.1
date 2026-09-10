@@ -1,69 +1,119 @@
-﻿using System;
+﻿
+using Conexxion;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Conexxion;
 
 namespace gym1._1
 {
     public partial class Deudores : PaginaProtegida
-    {
+    {  
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                txtDesde.Text = DateTime.Today.ToString("yyyy-MM-dd");
-                txtHasta.Text = DateTime.Today.AddMonths(1)
-                    .ToString("yyyy-MM-dd");
-
-                try
-                {
-                    CargarDeudores();
-                }
-                catch (SqlException ex)
-                {
-                    RedirigirAError(
-                        "Error de base de datos",
-                        ex
-                    );
-                }
-                catch (Exception ex)
-                {
-                    RedirigirAError(
-                        "Error inesperado",
-                        ex
-                    );
-                }
+                CargarOpcionesPeriodoPago();
+                CargarDeudores();
+                OcultarMensaje();
             }
         }
+
+        // =====================================================
+        // CARGAR MESES Y AÑOS
+        // =====================================================
+
+        private void CargarOpcionesPeriodoPago()
+        {
+            ddlMesPago.Items.Clear();
+            ddlAnioPago.Items.Clear();
+
+            CultureInfo cultura =
+                new CultureInfo("es-AR");
+
+            // Meses
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                string nombreMes =
+                    cultura.DateTimeFormat.GetMonthName(mes);
+
+                nombreMes =
+                    char.ToUpper(
+                        nombreMes[0],
+                        cultura
+                    ) +
+                    nombreMes.Substring(1);
+
+                ddlMesPago.Items.Add(
+                    new ListItem(
+                        nombreMes,
+                        mes.ToString()
+                    )
+                );
+            }
+
+            // Años
+            int anioActual = DateTime.Today.Year;
+
+            for (int anio = anioActual - 2;
+                 anio <= anioActual + 1;
+                 anio++)
+            {
+                ddlAnioPago.Items.Add(
+                    new ListItem(
+                        anio.ToString(),
+                        anio.ToString()
+                    )
+                );
+            }
+
+            // Período actual por defecto
+            ddlMesPago.SelectedValue =
+                DateTime.Today.Month.ToString();
+
+            ddlAnioPago.SelectedValue =
+                anioActual.ToString();
+        }
+
+        // =====================================================
+        // CARGAR DEUDORES
+        // =====================================================
 
         private void CargarDeudores()
         {
-            // El gimnasio se obtiene de la sesión mediante PaginaProtegida.
-            DataTable dt =
-                DeudoresDAL.ListarDeudores(IdGimnasioActual);
+            try
+            {
+                DataTable dt =
+                    DeudoresDAL.ListarDeudores(
+                        IdGimnasioActual
+                    );
 
-            AgregarMesesAdeudados(dt);
+                AgregarDatosMesesAdeudados(dt);
 
-            gvDeudores.DataSource = dt;
-            gvDeudores.DataBind();
+                gvDeudores.DataSource = dt;
+                gvDeudores.DataBind();
+            }
+            catch (Exception ex)
+            {
+                RegistrarError(
+                    "Error al cargar deudores",
+                    ex
+                );
+
+                MostrarMensaje(
+                    "No se pudo cargar el listado de deudores.",
+                    "danger"
+                );
+            }
         }
 
-        private void AgregarMesesAdeudados(DataTable dt)
+
+        private void AgregarDatosMesesAdeudados(DataTable dt)
         {
             if (dt == null)
                 return;
-
-            if (!dt.Columns.Contains("MesesAdeudados"))
-            {
-                dt.Columns.Add(
-                    "MesesAdeudados",
-                    typeof(int)
-                );
-            }
 
             if (!dt.Columns.Contains("MesesAdeudadosTexto"))
             {
@@ -83,41 +133,61 @@ namespace gym1._1
 
             foreach (DataRow row in dt.Rows)
             {
-                object fechaAlta =
-                    dt.Columns.Contains("FechaAlta")
-                        ? row["FechaAlta"]
-                        : DBNull.Value;
+                DateTime? vencimiento = null;
 
-                List<string> mesesAdeudados =
-                    ObtenerMesesAdeudados(
-                        row["Vencimiento"],
-                        fechaAlta
-                    );
+                if (dt.Columns.Contains("Vencimiento") &&
+                    row["Vencimiento"] != DBNull.Value)
+                {
+                    vencimiento =
+                        Convert.ToDateTime(
+                            row["Vencimiento"]
+                        );
+                }
 
-                int cantidadMeses =
-                    mesesAdeudados.Count;
-
-                row["MesesAdeudados"] =
-                    cantidadMeses;
+                List<string> meses =
+                    ObtenerMesesAdeudados(vencimiento);
 
                 row["MesesAdeudadosTexto"] =
-                    FormatearMesesAdeudados(
-                        cantidadMeses
-                    );
+                    meses.Count == 0
+                        ? "0"
+                        : meses.Count.ToString();
 
                 row["DetalleMesesAdeudados"] =
-                    FormatearDetalleMeses(
-                        mesesAdeudados
-                    );
+                    meses.Count == 0
+                        ? "No adeuda"
+                        : string.Join(", ", meses);
             }
         }
 
         private List<string> ObtenerMesesAdeudados(
-            object vencimientoValue,
-            object fechaAltaValue)
+    DateTime? vencimiento)
         {
             List<string> meses =
                 new List<string>();
+
+            // Si nunca pagó, podemos considerar el mes actual
+            // como deuda inicial.
+            if (!vencimiento.HasValue)
+            {
+                meses.Add(
+                    FormatearMes(DateTime.Today)
+                );
+
+                return meses;
+            }
+
+            if (vencimiento.Value.Date >=
+                DateTime.Today)
+            {
+                return meses;
+            }
+
+            DateTime cursor =
+                new DateTime(
+                    vencimiento.Value.Year,
+                    vencimiento.Value.Month,
+                    1
+                ).AddMonths(1);
 
             DateTime mesActual =
                 new DateTime(
@@ -126,135 +196,21 @@ namespace gym1._1
                     1
                 );
 
-            if (vencimientoValue == null ||
-                vencimientoValue == DBNull.Value)
-            {
-                DateTime fechaAlta =
-                    ObtenerFechaAlta(fechaAltaValue);
-
-                DateTime cursor =
-                    new DateTime(
-                        fechaAlta.Year,
-                        fechaAlta.Month,
-                        1
-                    );
-
-                while (cursor <= mesActual)
-                {
-                    meses.Add(FormatearMes(cursor));
-                    cursor = cursor.AddMonths(1);
-                }
-
-                return meses;
-            }
-
-            DateTime vencimiento =
-                Convert.ToDateTime(vencimientoValue)
-                    .Date;
-
-            if (vencimiento >= DateTime.Today)
-                return meses;
-
-            DateTime cursorVencimiento =
-                new DateTime(
-                    vencimiento.Year,
-                    vencimiento.Month,
-                    1
-                ).AddMonths(1);
-
-            while (cursorVencimiento <= mesActual)
+            while (cursor <= mesActual)
             {
                 meses.Add(
-                    FormatearMes(cursorVencimiento)
+                    FormatearMes(cursor)
                 );
 
-                cursorVencimiento =
-                    cursorVencimiento.AddMonths(1);
+                cursor =
+                    cursor.AddMonths(1);
             }
 
             return meses;
         }
-
-        private DateTime ObtenerFechaAlta(
-            object fechaAltaValue)
-        {
-            if (fechaAltaValue == null ||
-                fechaAltaValue == DBNull.Value)
-            {
-                return DateTime.Today;
-            }
-
-            return Convert
-                .ToDateTime(fechaAltaValue)
-                .Date;
-        }
-
-        private string FormatearMesesAdeudados(
-            int cantidadMeses)
-        {
-            if (cantidadMeses == 0)
-                return "0 meses";
-
-            return cantidadMeses == 1
-                ? "1 mes"
-                : cantidadMeses + " meses";
-        }
-
-        private string FormatearDetalleMeses(
-            List<string> meses)
-        {
-            if (meses == null ||
-                meses.Count == 0)
-            {
-                return "No adeuda meses";
-            }
-
-            return string.Join(", ", meses);
-        }
-
-        private string FormatearMes(DateTime fecha)
-        {
-            CultureInfo cultura =
-                new CultureInfo("es-AR");
-
-            string nombreMes =
-                cultura.DateTimeFormat
-                    .GetMonthName(fecha.Month);
-
-            return char.ToUpper(
-                       nombreMes[0],
-                       cultura
-                   ) +
-                   nombreMes.Substring(1) +
-                   " " +
-                   fecha.Year;
-        }
-
-        private void MostrarMensaje(
-            string texto,
-            string tipoBootstrap)
-        {
-            pnlMsg.Visible = true;
-            pnlMsg.CssClass =
-                "alert alert-" + tipoBootstrap;
-
-            lblMsg.Text =
-                Server.HtmlEncode(texto);
-        }
-
-        protected void btnMes_Click(
-            object sender,
-            EventArgs e)
-        {
-            txtDesde.Text =
-                DateTime.Today
-                    .ToString("yyyy-MM-dd");
-
-            txtHasta.Text =
-                DateTime.Today
-                    .AddMonths(1)
-                    .ToString("yyyy-MM-dd");
-        }
+        // =====================================================
+        // BOTÓN "MARCAR PAGADO"
+        // =====================================================
 
         protected void gvDeudores_RowCommand(
             object sender,
@@ -263,137 +219,237 @@ namespace gym1._1
             if (e.CommandName != "PAGAR")
                 return;
 
+            OcultarMensaje();
+
             try
             {
-                int rowIndex =
-                    Convert.ToInt32(
-                        e.CommandArgument
+                // CommandArgument contiene el índice
+                int rowIndex;
+
+                if (!int.TryParse(
+                    e.CommandArgument.ToString(),
+                    out rowIndex))
+                {
+                    MostrarMensaje(
+                        "No se pudo identificar al cliente.",
+                        "warning"
                     );
 
+                    return;
+                }
+
+                if (rowIndex < 0 ||
+                    rowIndex >= gvDeudores.Rows.Count)
+                {
+                    MostrarMensaje(
+                        "El cliente seleccionado no es válido.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+                // Obtenemos IdCliente desde DataKeys
                 int idCliente =
                     Convert.ToInt32(
-                        gvDeudores
-                            .DataKeys[rowIndex]
-                            .Value
+                        gvDeudores.DataKeys[rowIndex].Value
                     );
+
+                // =============================================
+                // VALIDAR PERÍODO
+                // =============================================
 
                 if (string.IsNullOrWhiteSpace(
-                        txtDesde.Text) ||
+                        ddlMesPago.SelectedValue) ||
                     string.IsNullOrWhiteSpace(
-                        txtHasta.Text) ||
-                    string.IsNullOrWhiteSpace(
-                        txtMonto.Text))
+                        ddlAnioPago.SelectedValue))
                 {
                     MostrarMensaje(
-                        "Completá Desde, Hasta y Monto antes de marcar pagado.",
+                        "Seleccioná el mes y el año del pago.",
                         "warning"
                     );
 
                     return;
                 }
 
-                DateTime desde;
+                int mes;
+                int anio;
 
-                if (!DateTime.TryParse(
-                        txtDesde.Text,
-                        out desde))
+                if (!int.TryParse(
+                        ddlMesPago.SelectedValue,
+                        out mes) ||
+                    !int.TryParse(
+                        ddlAnioPago.SelectedValue,
+                        out anio))
                 {
                     MostrarMensaje(
-                        "La fecha Desde no es válida.",
+                        "El período seleccionado no es válido.",
                         "warning"
                     );
 
                     return;
                 }
 
-                DateTime hasta;
+                DateTime fechaDesde =
+                    new DateTime(
+                        anio,
+                        mes,
+                        1
+                    );
 
-                if (!DateTime.TryParse(
-                        txtHasta.Text,
-                        out hasta))
+                DateTime fechaHasta =
+                    new DateTime(
+                        anio,
+                        mes,
+                        DateTime.DaysInMonth(
+                            anio,
+                            mes
+                        )
+                    );
+
+                DateTime fechaPago =
+                    DateTime.Now;
+
+                // =============================================
+                // VALIDAR MONTO
+                // =============================================
+
+                if (string.IsNullOrWhiteSpace(
+                    txtMonto.Text))
                 {
                     MostrarMensaje(
-                        "La fecha Hasta no es válida.",
+                        "Ingresá el monto del pago.",
                         "warning"
                     );
 
-                    return;
-                }
-
-                if (hasta.Date < DateTime.Today)
-                {
-                    MostrarMensaje(
-                        "No se puede registrar un pago con vencimiento en una fecha pasada.",
-                        "warning"
-                    );
-
-                    return;
-                }
-
-                if (hasta.Date < desde.Date)
-                {
-                    MostrarMensaje(
-                        "La fecha Hasta no puede ser menor que la fecha Desde.",
-                        "warning"
-                    );
-
+                    txtMonto.Focus();
                     return;
                 }
 
                 decimal monto;
 
-                string montoNormalizado =
+                string montoIngresado =
                     txtMonto.Text
                         .Trim()
                         .Replace(".", ",");
 
                 if (!decimal.TryParse(
-                        montoNormalizado,
+                        montoIngresado,
                         out monto) ||
                     monto <= 0)
                 {
                     MostrarMensaje(
-                        "Monto inválido. Ejemplo: 15000 o 15000,50.",
+                        "El monto ingresado no es válido. Ejemplo: 25000 o 25000,50.",
+                        "warning"
+                    );
+
+                    txtMonto.Focus();
+                    return;
+                }
+
+                // =============================================
+                // VALIDAR PAGO DUPLICADO
+                // =============================================
+
+                bool existePago =
+                    PagoDAL.ExistePagoEnMes(
+                        IdGimnasioActual,
+                        idCliente,
+                        fechaDesde
+                    );
+
+                if (existePago)
+                {
+                    MostrarMensaje(
+                        "Este cliente ya tiene registrado el pago de " +
+                        FormatearMes(fechaDesde) +
+                        ".",
                         "warning"
                     );
 
                     return;
                 }
 
+                // =============================================
+                // REGISTRAR PAGO
+                // =============================================
+
                 string observacion =
                     txtObs.Text.Trim();
 
-                DeudoresDAL.MarcarPagoMes(
+                PagoDAL.RegistrarPago(
                     IdGimnasioActual,
                     idCliente,
-                    desde,
-                    hasta,
+                    fechaPago,
+                    fechaDesde,
+                    fechaHasta,
                     monto,
                     observacion
                 );
 
+                // Recargamos la grilla.
+                CargarDeudores();
+
+                LimpiarCamposPago();
+
                 MostrarMensaje(
-                    "Pago registrado correctamente.",
+                    "Pago de " +
+                    FormatearMes(fechaDesde) +
+                    " registrado correctamente.",
                     "success"
                 );
-
-                CargarDeudores();
             }
             catch (SqlException ex)
             {
-                RedirigirAError(
-                    "Error de base de datos",
+                // Pago duplicado desde SQL
+                if (ex.Number == 50002)
+                {
+                    MostrarMensaje(
+                        "Ese mes ya se encuentra registrado como pagado.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+                // Cliente no pertenece al gimnasio
+                if (ex.Number == 50001)
+                {
+                    MostrarMensaje(
+                        "No se pudo validar el cliente seleccionado.",
+                        "danger"
+                    );
+
+                    return;
+                }
+
+                RegistrarError(
+                    "Error SQL al registrar pago desde Deudores",
                     ex
+                );
+
+                MostrarMensaje(
+                    "No se pudo registrar el pago.",
+                    "danger"
                 );
             }
             catch (Exception ex)
             {
-                RedirigirAError(
-                    "Error inesperado",
+                RegistrarError(
+                    "Error inesperado al registrar pago desde Deudores",
                     ex
+                );
+
+                MostrarMensaje(
+                    "Ocurrió un error inesperado al registrar el pago.",
+                    "danger"
                 );
             }
         }
+
+        // =====================================================
+        // COLORES / ESTADO GRIDVIEW
+        // =====================================================
 
         protected void gvDeudores_RowDataBound(
             object sender,
@@ -405,107 +461,173 @@ namespace gym1._1
                 return;
             }
 
+            // Estado
             Label lblEstado =
-                e.Row.FindControl("lblEstado")
-                as Label;
+                e.Row.FindControl(
+                    "lblEstado"
+                ) as Label;
 
+            if (lblEstado != null)
+            {
+                string estado =
+                    (lblEstado.Text ?? "")
+                    .Trim()
+                    .ToUpperInvariant();
+
+                switch (estado)
+                {
+                    case "AL DÍA":
+                    case "AL DIA":
+
+                        lblEstado.CssClass =
+                            "badge bg-success";
+                        break;
+
+                    case "POR VENCER":
+
+                        lblEstado.CssClass =
+                            "badge bg-warning text-dark";
+                        break;
+
+                    case "VENCIDO":
+
+                        lblEstado.CssClass =
+                            "badge bg-danger";
+                        break;
+
+                    case "SIN PAGO":
+
+                        lblEstado.CssClass =
+                            "badge bg-secondary";
+                        break;
+
+                    default:
+
+                        lblEstado.CssClass =
+                            "badge bg-secondary";
+                        break;
+                }
+            }
+
+            // Meses adeudados
             Label lblMeses =
                 e.Row.FindControl(
                     "lblMesesAdeudados"
                 ) as Label;
 
-            int meses =
-                Convert.ToInt32(
-                    DataBinder.Eval(
-                        e.Row.DataItem,
-                        "MesesAdeudados"
-                    )
-                );
-
-            string estado =
-                Convert.ToString(
-                    DataBinder.Eval(
-                        e.Row.DataItem,
-                        "EstadoPago"
-                    )
-                )
-                .ToUpper()
-                .Trim();
-
             if (lblMeses != null)
             {
-                lblMeses.CssClass = "badge";
+                string texto =
+                    (lblMeses.Text ?? "")
+                    .Trim();
 
-                if (estado == "SIN PAGO")
+                if (texto == "0" ||
+                    texto.Equals(
+                        "No adeuda",
+                        StringComparison.OrdinalIgnoreCase))
                 {
-                    lblMeses.CssClass +=
-                        " bg-danger";
-                }
-                else if (meses == 0)
-                {
-                    lblMeses.CssClass +=
-                        " bg-success";
-                }
-                else if (meses == 1)
-                {
-                    lblMeses.CssClass +=
-                        " bg-warning text-dark";
+                    lblMeses.CssClass =
+                        "badge bg-success";
                 }
                 else
                 {
-                    lblMeses.CssClass +=
-                        " bg-danger";
+                    lblMeses.CssClass =
+                        "badge bg-danger";
                 }
-            }
-
-            if (lblEstado == null)
-                return;
-
-            lblEstado.CssClass = "badge";
-
-            switch (estado)
-            {
-                case "AL DÍA":
-                case "AL DIA":
-                    lblEstado.CssClass +=
-                        " bg-success";
-                    break;
-
-                case "POR VENCER":
-                    lblEstado.CssClass +=
-                        " bg-warning text-dark";
-                    break;
-
-                case "VENCIDO":
-                    lblEstado.CssClass +=
-                        " bg-danger";
-                    break;
-
-                case "SIN PAGO":
-                default:
-                    lblEstado.CssClass +=
-                        " bg-secondary";
-                    break;
             }
         }
 
-        private void RedirigirAError(
-            string titulo,
+        // =====================================================
+        // UTILIDADES
+        // =====================================================
+
+        private string FormatearMes(
+            DateTime fecha)
+        {
+            CultureInfo cultura =
+                new CultureInfo("es-AR");
+
+            string mes =
+                cultura.DateTimeFormat
+                    .GetMonthName(
+                        fecha.Month
+                    );
+
+            mes =
+                char.ToUpper(
+                    mes[0],
+                    cultura
+                ) +
+                mes.Substring(1);
+
+            return mes +
+                   " " +
+                   fecha.Year;
+        }
+
+        private void LimpiarCamposPago()
+        {
+            txtMonto.Text = "";
+            txtObs.Text = "";
+
+            // Dejamos seleccionado el período actual.
+            if (ddlMesPago.Items.Count > 0)
+            {
+                ddlMesPago.SelectedValue =
+                    DateTime.Today.Month.ToString();
+            }
+
+            if (ddlAnioPago.Items.Count > 0)
+            {
+                ddlAnioPago.SelectedValue =
+                    DateTime.Today.Year.ToString();
+            }
+        }
+
+        // =====================================================
+        // MENSAJES
+        // =====================================================
+
+        private void MostrarMensaje(
+            string mensaje,
+            string tipoBootstrap)
+        {
+            pnlMsg.Visible = true;
+
+            pnlMsg.CssClass =
+                "alert alert-" +
+                tipoBootstrap;
+
+            lblMsg.Text =
+                Server.HtmlEncode(mensaje);
+        }
+
+        private void OcultarMensaje()
+        {
+            pnlMsg.Visible = false;
+            lblMsg.Text = "";
+        }
+
+        // =====================================================
+        // REGISTRO DE ERRORES
+        // =====================================================
+
+        private void RegistrarError(
+            string descripcion,
             Exception ex)
         {
-            Session["LastErrorTitle"] =
-                titulo;
+            string codigoError =
+                Guid.NewGuid()
+                    .ToString("N")
+                    .Substring(0, 8)
+                    .ToUpperInvariant();
 
-            Session["LastErrorMessage"] =
-                ex.Message;
-
-            Response.Redirect(
-                "~/Error.aspx",
-                false
+            System.Diagnostics.Trace.TraceError(
+                "{0}. Código: {1}. Detalle: {2}",
+                descripcion,
+                codigoError,
+                ex
             );
-
-            Context.ApplicationInstance
-                .CompleteRequest();
         }
     }
 }
