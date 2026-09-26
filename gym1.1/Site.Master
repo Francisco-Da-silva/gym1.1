@@ -176,7 +176,7 @@
                     <li class="nav-item mb-1">
                         <a class="nav-link text-white" runat="server" href="~/Registro">
                             <i class="bi bi-person-plus"></i>
-                            Registrar clientes
+                            -Registrar clientes
                         </a>
                     </li>
                     <li class="nav-item mb-1">

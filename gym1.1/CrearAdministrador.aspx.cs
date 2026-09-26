@@ -8,12 +8,40 @@ namespace gym1._1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Evita que esta página quede guardada en caché.
-            Response.Cache.SetNoStore();
-
-            if (!IsPostBack)
+            // Primero verificamos que exista una sesión válida
+            if (Session["IdUsuario"] == null ||
+                Session["IdGimnasio"] == null ||
+                Session["Rol"] == null)
             {
-                OcultarMensaje();
+                Response.Redirect(
+                    "~/Login.aspx",
+                    false
+                );
+
+                Context.ApplicationInstance
+                    .CompleteRequest();
+
+                return;
+            }
+
+            // Obtenemos el rol de la sesión
+            string rol =
+                Session["Rol"].ToString();
+
+            // Solo SuperAdministrador puede entrar
+            if (!rol.Equals(
+                "SuperAdministrador",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                Response.Redirect(
+                    "~/Default.aspx",
+                    false
+                );
+
+                Context.ApplicationInstance
+                    .CompleteRequest();
+
+                return;
             }
         }
 

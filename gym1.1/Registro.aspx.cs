@@ -72,6 +72,7 @@ namespace gym1._1
                     string.IsNullOrWhiteSpace(txtApellido.Text) ||
                     string.IsNullOrWhiteSpace(txtDni.Text) ||
                     string.IsNullOrWhiteSpace(txtFechaNac.Text))
+
                 {
                     MostrarMensaje(
                         "Completá nombre, apellido, DNI y fecha de nacimiento.",
@@ -91,6 +92,39 @@ namespace gym1._1
                     );
 
                     txtFechaNac.Focus();
+                    return;
+                }
+
+
+                string telefono = txtTelefono.Text.Trim();
+
+                if (telefono.Length > 20)
+                {
+                    MostrarMensaje(
+                        "El teléfono no puede superar los 20 caracteres.",
+                        "warning"
+                    );
+                    return;
+                }
+                // NO PERMITIR FECHA FUTURA
+                if (fechaNacimiento.Date > DateTime.Today)
+                {
+                    MostrarMensaje(
+                        "La fecha de nacimiento no puede ser futura.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+                // NO PERMITIR FECHAS ABSURDAMENTE ANTIGUAS
+                if (fechaNacimiento.Year < 1900)
+                {
+                    MostrarMensaje(
+                        "La fecha de nacimiento ingresada no es válida.",
+                        "warning"
+                    );
+
                     return;
                 }
 

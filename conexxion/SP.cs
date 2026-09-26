@@ -10,60 +10,100 @@ using System.Configuration;
 
 
 namespace Conexxion
+
+
 {
     public class SP
     {
         private static string connectionString =
-            ConfigurationManager.ConnectionStrings["GymDb"].ConnectionString;
+            ConfigurationManager
+                .ConnectionStrings["GymDb"]
+                .ConnectionString;
 
-        // 🔹 INSERTAR CLIENTE
+
+        // INSERTAR CLIENTE
         public static void AgregarCliente(
-     int idGimnasio,
-     string nombre,
-     string apellido,
-     string dni,
-     string telefono,
-     string email,
-     DateTime fechaNacimiento,
-     string planPago)
+            int idGimnasio,
+            string nombre,
+            string apellido,
+            string dni,
+            string telefono,
+            string email,
+            DateTime fechaNacimiento,
+            string planPago)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            using (SqlCommand cmd = new SqlCommand("Agregar_Cliente", con))
+            // Validación de fecha de nacimiento
+            if (fechaNacimiento.Date > DateTime.Today)
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                throw new ArgumentException(
+                    "La fecha de nacimiento no puede ser futura.",
+                    nameof(fechaNacimiento)
+                );
+            }
 
-                cmd.Parameters.Add("@IdGimnasio", SqlDbType.Int).Value =
-                    idGimnasio;
+            // Opcional: evitamos fechas absurdamente antiguas
+            if (fechaNacimiento.Year < 1900)
+            {
+                throw new ArgumentException(
+                    "La fecha de nacimiento ingresada no es válida.",
+                    nameof(fechaNacimiento)
+                );
+            }
 
-                cmd.Parameters.Add("@Nombre", SqlDbType.NVarChar, 50).Value =
-                    nombre;
+            using (SqlConnection con =
+                new SqlConnection(connectionString))
 
-                cmd.Parameters.Add("@Apellido", SqlDbType.NVarChar, 50).Value =
-                    apellido;
+            using (SqlCommand cmd =
+                new SqlCommand("Agregar_Cliente", con))
+            {
+                cmd.CommandType =
+                    CommandType.StoredProcedure;
 
-                cmd.Parameters.Add("@DNI", SqlDbType.NVarChar, 20).Value =
-                    dni;
+                cmd.Parameters
+                    .Add("@IdGimnasio", SqlDbType.Int)
+                    .Value = idGimnasio;
 
-                cmd.Parameters.Add("@Telefono", SqlDbType.NVarChar, 30).Value =
-                    string.IsNullOrWhiteSpace(telefono)
-                        ? (object)DBNull.Value
-                        : telefono;
+                cmd.Parameters
+                    .Add("@Nombre", SqlDbType.NVarChar, 50)
+                    .Value = nombre;
 
-                cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value =
-                    string.IsNullOrWhiteSpace(email)
-                        ? (object)DBNull.Value
-                        : email;
+                cmd.Parameters
+                    .Add("@Apellido", SqlDbType.NVarChar, 50)
+                    .Value = apellido;
 
-                cmd.Parameters.Add("@FechaNacimiento", SqlDbType.Date).Value =
-                    fechaNacimiento.Date;
+                cmd.Parameters
+                    .Add("@DNI", SqlDbType.NVarChar, 20)
+                    .Value = dni;
 
-                cmd.Parameters.Add("@PlanPago", SqlDbType.NVarChar, 30).Value =
-                    planPago;
+                cmd.Parameters
+                    .Add("@Telefono", SqlDbType.NVarChar, 30)
+                    .Value =
+                        string.IsNullOrWhiteSpace(telefono)
+                            ? (object)DBNull.Value
+                            : telefono;
+
+                cmd.Parameters
+                    .Add("@Email", SqlDbType.NVarChar, 100)
+                    .Value =
+                        string.IsNullOrWhiteSpace(email)
+                            ? (object)DBNull.Value
+                            : email;
+
+                cmd.Parameters
+                    .Add("@FechaNacimiento", SqlDbType.Date)
+                    .Value = fechaNacimiento.Date;
+
+                cmd.Parameters
+                    .Add("@PlanPago", SqlDbType.NVarChar, 30)
+                    .Value = planPago;
 
                 con.Open();
+
                 cmd.ExecuteNonQuery();
             }
         }
+    
+
         // 🔹 LISTAR CLIENTES
         public static DataTable ListarClientes(int idGimnasio)
         {
@@ -88,6 +128,48 @@ namespace Conexxion
             return dt;
         }
 
+
+        // OBTENER FECHA DE ALTA DEL CLIENTE
+        public static DateTime ObtenerFechaAltaCliente(
+            int idGimnasio,
+            int idCliente)
+        {
+            const string query = @"
+        SELECT FechaAlta
+        FROM dbo.Clientes
+        WHERE IdCliente = @IdCliente
+          AND IdGimnasio = @IdGimnasio;";
+
+            using (SqlConnection con =
+                new SqlConnection(connectionString))
+
+            using (SqlCommand cmd =
+                new SqlCommand(query, con))
+            {
+                cmd.Parameters
+                    .Add("@IdCliente", SqlDbType.Int)
+                    .Value = idCliente;
+
+                cmd.Parameters
+                    .Add("@IdGimnasio", SqlDbType.Int)
+                    .Value = idGimnasio;
+
+                con.Open();
+
+                object resultado =
+                    cmd.ExecuteScalar();
+
+                if (resultado == null ||
+                    resultado == DBNull.Value)
+                {
+                    throw new Exception(
+                        "No se encontró la fecha de alta del cliente."
+                    );
+                }
+
+                return Convert.ToDateTime(resultado);
+            }
+        }
 
 
         public static class PagoDAL
@@ -180,49 +262,7 @@ namespace Conexxion
             }
 
         }
-        public static DateTime ObtenerFechaAltaCliente(
-      int idGimnasio,
-      int idCliente)
-        {
-            const string query = @"
-                SELECT FechaAlta
-                FROM dbo.Clientes
-                WHERE IdCliente = @IdCliente
-                  AND IdGimnasio = @IdGimnasio;";
-
-            using (SqlConnection con =
-                new SqlConnection(connectionString))
-            using (SqlCommand cmd =
-                new SqlCommand(query, con))
-            {
-                cmd.Parameters.Add(
-                    "@IdCliente",
-                    SqlDbType.Int
-                ).Value = idCliente;
-
-                cmd.Parameters.Add(
-                    "@IdGimnasio",
-                    SqlDbType.Int
-                ).Value = idGimnasio;
-
-                con.Open();
-
-                object resultado =
-                    cmd.ExecuteScalar();
-
-                if (resultado == null ||
-                    resultado == DBNull.Value)
-                {
-                    throw new Exception(
-                        "No se pudo obtener la fecha de alta del cliente."
-                    );
-                }
-
-                return Convert.ToDateTime(
-                    resultado
-                );
-            }
-        }
+        
     }
 
 }

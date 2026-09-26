@@ -58,7 +58,7 @@
                 <asp:TextBox ID="txtTelefono"
                     runat="server"
                     CssClass="form-control"
-                    MaxLength="30" />
+                    MaxLength="20" />
             </div>
 
             <div class="col-md-6">

@@ -13,5 +13,7 @@
 
         public string PasswordHash { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
+
+        public bool Activo { get; set; }
     }
 }
