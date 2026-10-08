@@ -32,6 +32,9 @@ namespace Conexxion
             DateTime fechaNacimiento,
             string planPago)
         {
+            string error = ValidacionDatos.ErrorCliente(nombre, apellido, dni, telefono, email, fechaNacimiento, planPago);
+            if (idGimnasio <= 0 || error != null)
+                throw new ArgumentException(error ?? "El gimnasio no es válido.");
             // Validación de fecha de nacimiento
             if (fechaNacimiento.Date > DateTime.Today)
             {
@@ -129,6 +132,29 @@ namespace Conexxion
         }
 
 
+        public static bool ClientePertenece(int idGimnasio, int idCliente)
+        {
+            using (var con = new SqlConnection(connectionString))
+            using (var cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Clientes WHERE IdCliente=@IdCliente AND IdGimnasio=@IdGimnasio;", con))
+            {
+                cmd.Parameters.Add("@IdCliente", SqlDbType.Int).Value=idCliente;
+                cmd.Parameters.Add("@IdGimnasio", SqlDbType.Int).Value=idGimnasio;
+                con.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) == 1;
+            }
+        }
+        public static bool EliminarCliente(int idGimnasio, int idCliente)
+        {
+            using (var con = new SqlConnection(connectionString))
+            using (var cmd = new SqlCommand("DELETE FROM dbo.Clientes WHERE IdCliente=@IdCliente AND IdGimnasio=@IdGimnasio;", con))
+            {
+                cmd.Parameters.Add("@IdCliente", SqlDbType.Int).Value=idCliente;
+                cmd.Parameters.Add("@IdGimnasio", SqlDbType.Int).Value=idGimnasio;
+                con.Open();
+                return cmd.ExecuteNonQuery() == 1;
+            }
+        }
+
         // OBTENER FECHA DE ALTA DEL CLIENTE
         public static DateTime ObtenerFechaAltaCliente(
             int idGimnasio,
@@ -214,57 +240,24 @@ namespace Conexxion
                 return dt;
             }
 
-            public static bool ExistePagoEnMes(int idCliente, DateTime fechaDesde) 
+            public static bool ExistePagoEnMes(int idCliente, DateTime fechaDesde)
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand(@"
-                    SELECT COUNT(1)
-                    FROM dbo.Pagos
-                    WHERE IdCliente = @IdCliente
-                      AND YEAR(FechaDesde) = @Anio
-                      AND MONTH(FechaDesde) = @Mes;", con))
-                {
-                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
-                    cmd.Parameters.AddWithValue("@Anio", fechaDesde.Year);
-                    cmd.Parameters.AddWithValue("@Mes", fechaDesde.Month);
-
-                    con.Open();
-                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-                }
+                return Conexxion.PagoDAL.ExistePagoEnMes(IdGimnasioSesion(), idCliente, fechaDesde);
             }
-
-            // ✅ REGISTRAR UN NUEVO PAGO
-            public static void RegistrarPago(
-                int idCliente,
-                DateTime fechaPago,
-                DateTime fechaDesde,
-                DateTime fechaHasta,
-                decimal monto,
-                string observacion
-            )
+            public static void RegistrarPago(int idCliente, DateTime fechaPago, DateTime fechaDesde,
+                DateTime fechaHasta, decimal monto, string observacion)
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand("Registrar_Pago", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
-                    cmd.Parameters.AddWithValue("@FechaPago", fechaPago);
-                    cmd.Parameters.AddWithValue("@FechaDesde", fechaDesde);
-                    cmd.Parameters.AddWithValue("@FechaHasta", fechaHasta);
-                    cmd.Parameters.AddWithValue("@Monto", monto);
-                    cmd.Parameters.AddWithValue("@Observacion",
-                        string.IsNullOrWhiteSpace(observacion) ? (object)DBNull.Value : observacion);
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
+                Conexxion.PagoDAL.RegistrarPago(IdGimnasioSesion(), idCliente, fechaPago, fechaDesde, fechaHasta, monto, observacion);
             }
-
+            private static int IdGimnasioSesion()
+            {
+                var contexto = System.Web.HttpContext.Current;
+                int id;
+                if (contexto == null || contexto.Session == null ||
+                    !int.TryParse(Convert.ToString(contexto.Session["IdGimnasio"]), out id) || id <= 0)
+                    throw new InvalidOperationException("Se requiere una sesión de gimnasio.");
+                return id;
+            }
         }
-        
     }
-
 }
-
-

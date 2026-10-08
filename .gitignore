@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Evidencia local y bases de pruebas
+**/App_Data/Logs/
+Tests/Auditoria/*.exe
+Tests/Auditoria/*.dll
+Tests/Auditoria/*.exe.config
+Tests/Auditoria/*-results.json
+*.mdf
+*.ldf

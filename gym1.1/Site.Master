@@ -144,74 +144,150 @@
         <div class="d-flex layout-root">
 
             <!-- SIDEBAR LATERAL GYM -->
-            <aside class="sidebar-gym d-flex flex-column p-3">
-                <div class="brand mb-3">
-                    <div class="brand-icon">
-                        <i class="bi bi-barbell"></i>
-                    </div>
-                    <div class="brand-text">
-                        Gym Manager
-                    </div>
-                </div>
+           <ul class="nav nav-pills flex-column mb-auto">
 
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item mb-1">
-                        <a class="nav-link text-white" runat="server" href="~/">
-                            <i class="bi bi-house-door"></i>
-                            Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item mb-1">
-                        <a class="nav-link text-white" runat="server" href="~/Pagos">
-                            <i class="bi bi-info-circle"></i>
-                            Pagos
-                        </a>
-                    </li>
-                    <li class="nav-item mb-1">
-                        <a class="nav-link text-white" runat="server" href="~/Clientes">
-                            <i class="bi bi-people"></i>
-                            Listado de clientes
-                        </a>
-                    </li>
-                    <li class="nav-item mb-1">
-                        <a class="nav-link text-white" runat="server" href="~/Registro">
-                            <i class="bi bi-person-plus"></i>
-                            -Registrar clientes
-                        </a>
-                    </li>
-                    <li class="nav-item mb-1">
-                        <a class="nav-link text-white " runat="server" href="~/Deudores">
-                            Deudores</a>
+    <!-- ========================================= -->
+    <!-- OPCIONES GENERALES -->
+    <!-- Todos los usuarios logueados -->
+    <!-- ========================================= -->
 
-                    </li>
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white"
+           runat="server"
+           href="~/">
 
-                     <li class="nav-item mb-1">
-                         <a class="nav-link text-white " runat="server" href="~/CrearAdministrador">
-                             Crear administrador</a>
+            <i class="bi bi-house-door"></i>
+            Inicio
 
-                     </li>
+        </a>
+    </li>
 
 
-                    <asp:LinkButton
-    ID="btnCerrarSesion"
-    runat="server"
-    CssClass="nav-link"
-    CausesValidation="false"
-    OnClick="btnCerrarSesion_Click">
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white"
+           runat="server"
+           href="~/Pagos">
 
-    <i class="bi bi-box-arrow-right"></i>
-    Cerrar sesión
+            <i class="bi bi-cash-coin"></i>
+            Pagos
 
-</asp:LinkButton>
+        </a>
+    </li>
 
-                </ul>
+
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white"
+           runat="server"
+           href="~/Clientes">
+
+            <i class="bi bi-people"></i>
+            Listado de clientes
+
+        </a>
+    </li>
+
+
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white"
+           runat="server"
+           href="~/Registro">
+
+            <i class="bi bi-person-plus"></i>
+            Registrar clientes
+
+        </a>
+    </li>
+
+
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white"
+           runat="server"
+           href="~/Deudores">
+
+            <i class="bi bi-exclamation-triangle"></i>
+            Deudores
+
+        </a>
+    </li>
+
+
+    <!-- ========================================= -->
+    <!-- OPCIONES EXCLUSIVAS SUPERADMINISTRADOR -->
+    <!-- ========================================= -->
+
+    <asp:Panel
+        ID="pnlSuperAdministrador"
+        runat="server"
+        Visible="false">
+
+        <li class="nav-item mt-3 mb-2">
+
+            <span class="text-success small fw-bold px-2">
+                SUPERADMINISTRADOR
+            </span>
+
+        </li>
+
+
+        <li class="nav-item mb-1">
+
+            <a class="nav-link text-white"
+               runat="server"
+               href="~/AdministrarGimnasios.aspx">
+
+                <i class="bi bi-buildings"></i>
+                Administrar gimnasios
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item mb-1">
+
+            <a class="nav-link text-white"
+               runat="server"
+               href="~/CrearAdministrador.aspx">
+
+                <i class="bi bi-building-add"></i>
+                Registrar gimnasio
+
+            </a>
+
+        </li>
+
+    </asp:Panel>
+
+
+    <!-- ========================================= -->
+    <!-- CERRAR SESIÓN -->
+    <!-- ========================================= -->
+
+    <li class="nav-item mt-3">
+
+        <asp:LinkButton
+            ID="btnCerrarSesion"
+            runat="server"
+            CssClass="nav-link text-white"
+            CausesValidation="false"
+            OnClick="btnCerrarSesion_Click">
+
+            <i class="bi bi-box-arrow-right"></i>
+            Cerrar sesión
+
+        </asp:LinkButton>
+
+    </li>
+
+</ul>
+
+
 
                 <div class="mt-auto sidebar-footer">
                     &copy; <%: DateTime.Now.Year %> - Gym Manager
                     <br />
                     <span class="text-success">#NoPainNoGain</span>
                 </div>
-            </aside>
 
             <!-- CONTENIDO PRINCIPAL -->
             <main class="flex-grow-1 main-area d-flex flex-column">

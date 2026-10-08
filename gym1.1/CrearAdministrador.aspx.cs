@@ -1,193 +1,259 @@
-﻿using System;
-using System.Data.SqlClient;
-using Conexxion;
+﻿
+using Conexcion;
+using System;
+    using System.Data.SqlClient;
 
-namespace gym1._1
-{
-    public partial class CrearAdministrador : System.Web.UI.Page
+    namespace gym1._1
     {
-        protected void Page_Load(object sender, EventArgs e)
+        public partial class CrearAdministrador : PaginaSuperAdministrador
         {
-            // Primero verificamos que exista una sesión válida
-            if (Session["IdUsuario"] == null ||
-                Session["IdGimnasio"] == null ||
-                Session["Rol"] == null)
+            protected void Page_Load(object sender, EventArgs e)
             {
-                Response.Redirect(
-                    "~/Login.aspx",
-                    false
-                );
-
-                Context.ApplicationInstance
-                    .CompleteRequest();
-
-                return;
+                if (!IsPostBack)
+                {
+                    OcultarMensaje();
+                }
             }
 
-            // Obtenemos el rol de la sesión
-            string rol =
-                Session["Rol"].ToString();
 
-            // Solo SuperAdministrador puede entrar
-            if (!rol.Equals(
-                "SuperAdministrador",
-                StringComparison.OrdinalIgnoreCase))
+            // ==============================================
+            // REGISTRAR NUEVO GIMNASIO
+            // ==============================================
+
+            protected void btnCrear_Click(
+                object sender,
+                EventArgs e)
             {
-                Response.Redirect(
-                    "~/Default.aspx",
-                    false
-                );
+                OcultarMensaje();
 
-                Context.ApplicationInstance
-                    .CompleteRequest();
+                // Datos del gimnasio
+                string nombreGimnasio =
+                    txtNombreGimnasio.Text.Trim();
 
-                return;
-            }
-        }
+                string emailGimnasio =
+                    txtEmailGimnasio.Text.Trim();
 
-        protected void btnCrear_Click(object sender, EventArgs e)
-        {
-            OcultarMensaje();
+                string telefono =
+                    txtTelefono.Text.Trim();
 
-            string nombreGimnasio = txtNombreGimnasio.Text.Trim();
-            string emailGimnasio = txtEmailGimnasio.Text.Trim();
-            string telefono = txtTelefono.Text.Trim();
+                // Datos de acceso del gimnasio
+                string nombreUsuario =
+                    txtNombre.Text.Trim();
 
-            string nombreAdministrador = txtNombre.Text.Trim();
-            string emailAdministrador = txtEmail.Text.Trim();
-            string password = txtPassword.Text;
-            string repetirPassword = txtRepetirPassword.Text;
+                string emailUsuario =
+                    txtEmail.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(nombreGimnasio) ||
-                string.IsNullOrWhiteSpace(emailGimnasio) ||
-                string.IsNullOrWhiteSpace(nombreAdministrador) ||
-                string.IsNullOrWhiteSpace(emailAdministrador) ||
-                string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(repetirPassword))
-            {
-                MostrarMensaje(
-                    "Completá todos los campos obligatorios.",
-                    "warning"
-                );
+                string password =
+                    txtPassword.Text;
 
-                return;
-            }
+                string repetirPassword =
+                    txtRepetirPassword.Text;
 
-            if (password.Length < 8)
-            {
-                MostrarMensaje(
-                    "La contraseña debe tener al menos 8 caracteres.",
-                    "warning"
-                );
 
-                return;
-            }
+                // ==========================================
+                // VALIDACIONES
+                // ==========================================
 
-            if (password != repetirPassword)
-            {
-                MostrarMensaje(
-                    "Las contraseñas no coinciden.",
-                    "warning"
-                );
-
-                return;
-            }
-
-            try
-            {
-                int idGimnasio =
-                    UsuarioDAL.RegistrarGimnasioConAdministrador(
-                        nombreGimnasio,
-                        emailGimnasio,
-                        telefono,
-                        nombreAdministrador,
-                        emailAdministrador,
-                        password
-                    );
-
-                Response.Redirect(
-                    "~/Login.aspx?registro=ok",
-                    false
-                );
-
-                Context.ApplicationInstance.CompleteRequest();
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Por ejemplo: correo ya registrado.
-                MostrarMensaje(
-                    ex.Message,
-                    "warning"
-                );
-            }
-            catch (SqlException ex)
-            {
-                if (ex.Number == 2601 ||
-                    ex.Number == 2627)
+                if (string.IsNullOrWhiteSpace(nombreGimnasio) ||
+                    string.IsNullOrWhiteSpace(emailGimnasio) ||
+                    string.IsNullOrWhiteSpace(nombreUsuario) ||
+                    string.IsNullOrWhiteSpace(emailUsuario) ||
+                    string.IsNullOrWhiteSpace(password) ||
+                    string.IsNullOrWhiteSpace(repetirPassword))
                 {
                     MostrarMensaje(
-                        "Ya existe una cuenta con ese correo electrónico.",
+                        "Completá todos los campos obligatorios.",
                         "warning"
                     );
 
                     return;
                 }
 
-                RedirigirAError(
-                    "Error de base de datos al crear la cuenta.",
-                    ex
-                );
+
+                if (password.Length < 8)
+                {
+                    MostrarMensaje(
+                        "La contraseña debe tener al menos 8 caracteres.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+
+                if (password != repetirPassword)
+                {
+                    MostrarMensaje(
+                        "Las contraseñas no coinciden.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+
+                try
+                {
+                    // ======================================
+                    // CREAR GIMNASIO + USUARIO DE ACCESO
+                    // ======================================
+
+                    int idGimnasio =
+                        UsuarioDAL
+                            .RegistrarGimnasioConAdministrador(
+                                nombreGimnasio,
+                                emailGimnasio,
+                                telefono,
+                                nombreUsuario,
+                                emailUsuario,
+                                password
+                            );
+
+
+                    // ======================================
+                    // LIMPIAR FORMULARIO
+                    // ======================================
+
+                    LimpiarFormulario();
+
+
+                    // ======================================
+                    // MOSTRAR RESULTADO
+                    // ======================================
+
+                    MostrarMensaje(
+                        "Gimnasio registrado correctamente. " +
+                        "ID del gimnasio: " +
+                        idGimnasio +
+                        ". La cuenta ya puede iniciar sesión.",
+                        "success"
+                    );
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // Errores esperados de negocio.
+                    // Ejemplo: email ya registrado.
+
+                    MostrarMensaje(
+                        ex.Message,
+                        "warning"
+                    );
+                }
+                catch (SqlException ex)
+                {
+                    // Índice UNIQUE / registro duplicado
+                    if (ex.Number == 2601 ||
+                        ex.Number == 2627)
+                    {
+                        MostrarMensaje(
+                            "Ya existe una cuenta con ese correo electrónico.",
+                            "warning"
+                        );
+
+                        return;
+                    }
+
+                    RedirigirAError(
+                        "Error de base de datos al registrar el gimnasio.",
+                        ex
+                    );
+                }
+                catch (Exception ex)
+                {
+                    RedirigirAError(
+                        "Error inesperado al registrar el gimnasio.",
+                        ex
+                    );
+                }
             }
-            catch (Exception ex)
+
+
+            // ==============================================
+            // LIMPIAR FORMULARIO
+            // ==============================================
+
+            private void LimpiarFormulario()
             {
-                RedirigirAError(
-                    "Error inesperado al crear la cuenta.",
-                    ex
-                );
+                txtNombreGimnasio.Text =
+                    string.Empty;
+
+                txtEmailGimnasio.Text =
+                    string.Empty;
+
+                txtTelefono.Text =
+                    string.Empty;
+
+                txtNombre.Text =
+                    string.Empty;
+
+                txtEmail.Text =
+                    string.Empty;
+
+                txtPassword.Text =
+                    string.Empty;
+
+                txtRepetirPassword.Text =
+                    string.Empty;
             }
-        }
 
-        private void MostrarMensaje(
-            string mensaje,
-            string tipo)
-        {
-            pnlMensaje.Visible = true;
-            pnlMensaje.CssClass =
-                "alert alert-" + tipo;
 
-            lblMensaje.Text =
-                Server.HtmlEncode(mensaje);
-        }
+            // ==============================================
+            // MOSTRAR MENSAJE
+            // ==============================================
 
-        private void OcultarMensaje()
-        {
-            pnlMensaje.Visible = false;
-            lblMensaje.Text = string.Empty;
-        }
+            private void MostrarMensaje(
+                string mensaje,
+                string tipo)
+            {
+                pnlMensaje.Visible =
+                    true;
 
-        private void RedirigirAError(
-            string descripcion,
-            Exception ex)
-        {
-            string codigoError =
-                Guid.NewGuid()
-                    .ToString("N")
-                    .Substring(0, 8)
-                    .ToUpper();
+                pnlMensaje.CssClass =
+                    "alert alert-" + tipo;
 
-            System.Diagnostics.Trace.TraceError(
-                "{0} Código: {1}. Detalle: {2}",
-                descripcion,
-                codigoError,
-                ex
-            );
+                lblMensaje.Text =
+                    Server.HtmlEncode(mensaje);
+            }
 
-            Response.Redirect(
-                "~/Error.aspx?codigo=" + codigoError,
-                false
-            );
 
-            Context.ApplicationInstance.CompleteRequest();
+            // ==============================================
+            // OCULTAR MENSAJE
+            // ==============================================
+
+            private void OcultarMensaje()
+            {
+                pnlMensaje.Visible =
+                    false;
+
+                lblMensaje.Text =
+                    string.Empty;
+            }
+
+
+            // ==============================================
+            // ERROR INESPERADO
+            // ==============================================
+
+            private void RedirigirAError(
+                string descripcion,
+                Exception ex)
+            {
+                string codigoError =
+                    Guid.NewGuid()
+                        .ToString("N")
+                        .Substring(0, 8)
+                        .ToUpperInvariant();
+
+                Conexxion.AppLogger.RegistrarError(codigoError, "CrearAdministrador.aspx", ex);
+
+                Response.Redirect(
+                    "~/Error.aspx?codigo=" +
+                    Server.UrlEncode(codigoError),
+                    false
+                );
+
+                Context.ApplicationInstance
+                    .CompleteRequest();
+            }
         }
     }
-}

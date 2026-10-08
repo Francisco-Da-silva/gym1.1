@@ -1,0 +1,167 @@
+[
+  {
+    "test": "A02 usuario inexistente",
+    "passed": true,
+    "evidence": "POST real, mensaje genérico"
+  },
+  {
+    "test": "A03 contraseña incorrecta",
+    "passed": true,
+    "evidence": "POST real, mensaje genérico"
+  },
+  {
+    "test": "A04 SQL Injection",
+    "passed": true,
+    "evidence": "POST real, mensaje genérico"
+  },
+  {
+    "test": "Cuenta inactiva",
+    "passed": true,
+    "evidence": "POST real de cuenta ficticia inactiva"
+  },
+  {
+    "test": "J01 login correcto",
+    "passed": true,
+    "evidence": "POST real y entrega de un solo uso"
+  },
+  {
+    "test": "B05 Session Fixation",
+    "passed": true,
+    "evidence": "SID previo y posterior distintos; valores omitidos"
+  },
+  {
+    "test": "B05 SID anterior sin acceso",
+    "passed": true,
+    "evidence": "Reutilización del SID previo no autentica"
+  },
+  {
+    "test": "B06 rol Administrador CrearAdministrador.aspx",
+    "passed": true,
+    "evidence": "GET real bloqueado por rol de base"
+  },
+  {
+    "test": "B06 rol Administrador AdministrarGimnasios.aspx",
+    "passed": true,
+    "evidence": "GET real bloqueado por rol de base"
+  },
+  {
+    "test": "B06 POST sin rol",
+    "passed": true,
+    "evidence": "Evento de alta no ejecutado"
+  },
+  {
+    "test": "J05 listado aislado",
+    "passed": true,
+    "evidence": "HTML real solo tenant A"
+  },
+  {
+    "test": "J15 tenant B",
+    "passed": true,
+    "evidence": "Segundo usuario y sesión distintos"
+  },
+  {
+    "test": "E02 cierre script escapado",
+    "passed": true,
+    "evidence": "Datos ficticios maliciosos desde SQL serializados en la página real"
+  },
+  {
+    "test": "C05 hidden manipulado",
+    "passed": true,
+    "evidence": "IdCliente del tenant B rechazado sin excepción"
+  },
+  {
+    "test": "J09 selección cliente",
+    "passed": true,
+    "evidence": "Postback y carga del historial del fixture"
+  },
+  {
+    "test": "D04 cero",
+    "passed": true,
+    "evidence": "POST real rechazo amigable"
+  },
+  {
+    "test": "D05 negativo",
+    "passed": true,
+    "evidence": "POST real rechazo amigable"
+  },
+  {
+    "test": "D06 texto",
+    "passed": true,
+    "evidence": "POST real rechazo amigable"
+  },
+  {
+    "test": "D08 exceso",
+    "passed": true,
+    "evidence": "POST real rechazo amigable"
+  },
+  {
+    "test": "E01 201 caracteres",
+    "passed": true,
+    "evidence": "POST real longitud excedida"
+  },
+  {
+    "test": "CSRF token obligatorio",
+    "passed": true,
+    "evidence": "POST sin token no alcanza el evento protegido"
+  },
+  {
+    "test": "J11 pago normal UI",
+    "passed": true,
+    "evidence": "POST real, recarga y mensaje de éxito"
+  },
+  {
+    "test": "J12 pago duplicado UI",
+    "passed": true,
+    "evidence": "Segundo envío rechazado con mensaje amigable"
+  },
+  {
+    "test": "J14 deudores",
+    "passed": true,
+    "evidence": "Cliente A cubierto por pago futuro no figura como deudor"
+  },
+  {
+    "test": "J06 alta cliente UI",
+    "passed": true,
+    "evidence": "POST real con nombre y teléfono flexibles"
+  },
+  {
+    "test": "J07 DNI duplicado UI",
+    "passed": true,
+    "evidence": "Segundo alta mismo tenant rechazada"
+  },
+  {
+    "test": "J08 fecha futura UI",
+    "passed": true,
+    "evidence": "POST real sin alta"
+  },
+  {
+    "test": "E03 RequestValidation",
+    "passed": true,
+    "evidence": "ASP.NET mantiene validación y usa aviso fijo"
+  },
+  {
+    "test": "SuperAdmin listado",
+    "passed": true,
+    "evidence": "Listado real con datos de ambos gimnasios y rol correcto"
+  },
+  {
+    "test": "B02/J03 logout",
+    "passed": true,
+    "evidence": "Click real; Clear, Abandon y expiración de cookie"
+  },
+  {
+    "test": "B04 tras logout Default.aspx",
+    "passed": true,
+    "evidence": "GET real después de logout"
+  },
+  {
+    "test": "B04 tras logout Clientes.aspx",
+    "passed": true,
+    "evidence": "GET real después de logout"
+  },
+  {
+    "test": "B04 tras logout Pagos.aspx",
+    "passed": true,
+    "evidence": "GET real después de logout"
+  }
+]

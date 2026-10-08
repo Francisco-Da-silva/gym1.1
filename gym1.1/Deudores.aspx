@@ -100,6 +100,7 @@
 
                         <asp:TextBox
                             ID="txtObs"
+                            MaxLength="200"
                             runat="server"
                             CssClass="form-control"
                             placeholder="Opcional">

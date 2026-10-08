@@ -18,6 +18,7 @@ namespace gym1._1
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            txtObs.Attributes["maxlength"] = "200";
             CargarClientesParaBuscador();
 
             if (!IsPostBack)
@@ -158,7 +159,9 @@ namespace gym1._1
 
             ClientesJson =
                 new JavaScriptSerializer()
-                    .Serialize(clientes);
+                    .Serialize(clientes)
+                    .Replace("<", "\\u003c").Replace(">", "\\u003e").Replace("&", "\\u0026")
+                    .Replace("\u2028", "\\u2028").Replace("\u2029", "\\u2029");
         }
 
         protected void btnSeleccionarCliente_Click(
@@ -176,6 +179,12 @@ namespace gym1._1
                     "warning"
                 );
 
+                return;
+            }
+
+            if (!SP.ClientePertenece(IdGimnasioActual, idCliente))
+            {
+                MostrarMensaje("No se pudo validar el cliente seleccionado.", "warning");
                 return;
             }
 
@@ -727,24 +736,21 @@ namespace gym1._1
                     return;
                 }
 
-                if (!decimal.TryParse(
-                        txtMonto.Text
-                            .Trim()
-                            .Replace(".", ","),
-                        out decimal monto) ||
-                    monto <= 0)
+                if (!ValidacionDatos.TryMonto(txtMonto.Text, out decimal monto))
                 {
-                    MostrarMensaje(
-                        "El monto es inválido. Ejemplo: 15000 o 15000,50.",
-                        "warning"
-                    );
-
+                    MostrarMensaje("El monto es inválido. Usá hasta dos decimales y un máximo de 9999999999,99.", "warning");
                     return;
                 }
 
                 string observacion =
                     txtObs.Text.Trim();
 
+                string errorPago = ValidacionDatos.ErrorPago(monto, observacion);
+                if (errorPago != null)
+                {
+                    MostrarMensaje(errorPago, "warning");
+                    return;
+                }
                 PagoDAL.RegistrarPago(
                     IdGimnasioActual,
                     idCliente,
@@ -765,10 +771,29 @@ namespace gym1._1
             }
             catch (SqlException ex)
             {
+                if (ex.Number == 50001)
+                {
+                    MostrarMensaje("No se pudo validar el cliente seleccionado.", "warning");
+                    return;
+                }
+                if (ex.Number == 50002 || ex.Number == 2601 || ex.Number == 2627)
+                {
+                    MostrarMensaje("Este cliente ya tiene registrado un pago para ese período.", "warning");
+                    return;
+                }
+                if (ex.Number == 50003 || ex.Number == 50004)
+                {
+                    MostrarMensaje("Revisá el importe y el período, o consultá si el gimnasio se encuentra activo.", "warning");
+                    return;
+                }
                 RedirigirAError(
                     "Error SQL al registrar el pago.",
                     ex
                 );
+            }
+            catch (ArgumentException ex)
+            {
+                MostrarMensaje(ex.Message, "warning");
             }
             catch (Exception ex)
             {
@@ -789,12 +814,7 @@ namespace gym1._1
                     .Substring(0, 8)
                     .ToUpperInvariant();
 
-            System.Diagnostics.Trace.TraceError(
-                "{0} Código: {1}. Detalle: {2}",
-                descripcion,
-                codigoError,
-                ex
-            );
+            Conexxion.AppLogger.RegistrarError(codigoError, "Pagos.aspx", ex);
 
             Session["LastErrorTitle"] =
                 "No se pudo registrar el pago";
@@ -882,6 +902,8 @@ namespace gym1._1
                 );
             }
 
+            if (mes < 1 || mes > 12 || anio < DateTime.Today.Year - 2 || anio > DateTime.Today.Year + 1)
+                throw new ArgumentException("El período seleccionado no es válido.");
             return new DateTime(
                 anio,
                 mes,

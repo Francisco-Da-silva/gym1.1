@@ -51,56 +51,7 @@ namespace Conexxion
             decimal monto,
             string observacion)
         {
-            using (SqlConnection con =
-                   new SqlConnection(connectionString))
-            using (SqlCommand cmd =
-                   new SqlCommand("Marcar_Pago_Mes", con))
-            {
-                cmd.CommandType =
-                    CommandType.StoredProcedure;
-
-                cmd.Parameters.Add(
-                    "@IdGimnasio",
-                    SqlDbType.Int
-                ).Value = idGimnasio;
-
-                cmd.Parameters.Add(
-                    "@IdCliente",
-                    SqlDbType.Int
-                ).Value = idCliente;
-
-                cmd.Parameters.Add(
-                    "@FechaDesde",
-                    SqlDbType.Date
-                ).Value = desde.Date;
-
-                cmd.Parameters.Add(
-                    "@FechaHasta",
-                    SqlDbType.Date
-                ).Value = hasta.Date;
-
-                SqlParameter parametroMonto =
-                    cmd.Parameters.Add(
-                        "@Monto",
-                        SqlDbType.Decimal
-                    );
-
-                parametroMonto.Precision = 10;
-                parametroMonto.Scale = 2;
-                parametroMonto.Value = monto;
-
-                cmd.Parameters.Add(
-                    "@Observacion",
-                    SqlDbType.NVarChar,
-                    200
-                ).Value =
-                    string.IsNullOrWhiteSpace(observacion)
-                        ? (object)DBNull.Value
-                        : observacion.Trim();
-
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            PagoDAL.RegistrarPago(idGimnasio, idCliente, DateTime.Now, desde, hasta, monto, observacion);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace gym1._1
     {  
         protected void Page_Load(object sender, EventArgs e)
         {
+            txtObs.Attributes["maxlength"] = "200";
             if (!IsPostBack)
             {
                 CargarOpcionesPeriodoPago();
@@ -97,13 +98,13 @@ namespace gym1._1
             }
             catch (Exception ex)
             {
-                RegistrarError(
+                string codigoError = RegistrarError(
                     "Error al cargar deudores",
                     ex
                 );
 
                 MostrarMensaje(
-                    "No se pudo cargar el listado de deudores.",
+                    "No se pudo cargar el listado de deudores. Código: " + codigoError,
                     "danger"
                 );
             }
@@ -145,7 +146,7 @@ namespace gym1._1
                 }
 
                 List<string> meses =
-                    ObtenerMesesAdeudados(vencimiento);
+                    ObtenerMesesAdeudados(vencimiento, Convert.ToDateTime(row["FechaAlta"]));
 
                 row["MesesAdeudadosTexto"] =
                     meses.Count == 0
@@ -160,34 +161,16 @@ namespace gym1._1
         }
 
         private List<string> ObtenerMesesAdeudados(
-    DateTime? vencimiento)
+    DateTime? vencimiento, DateTime fechaAlta)
         {
             List<string> meses =
                 new List<string>();
 
-            // Si nunca pagó, podemos considerar el mes actual
-            // como deuda inicial.
-            if (!vencimiento.HasValue)
-            {
-                meses.Add(
-                    FormatearMes(DateTime.Today)
-                );
-
+            if (vencimiento.HasValue && vencimiento.Value.Date >= DateTime.Today)
                 return meses;
-            }
-
-            if (vencimiento.Value.Date >=
-                DateTime.Today)
-            {
-                return meses;
-            }
-
-            DateTime cursor =
-                new DateTime(
-                    vencimiento.Value.Year,
-                    vencimiento.Value.Month,
-                    1
-                ).AddMonths(1);
+            DateTime inicio = vencimiento.HasValue ? vencimiento.Value : fechaAlta;
+            DateTime cursor = new DateTime(inicio.Year, inicio.Month, 1);
+            if (vencimiento.HasValue) cursor = cursor.AddMonths(1);
 
             DateTime mesActual =
                 new DateTime(
@@ -290,6 +273,11 @@ namespace gym1._1
                     return;
                 }
 
+                if (mes < 1 || mes > 12 || anio < DateTime.Today.Year - 2 || anio > DateTime.Today.Year + 1)
+                {
+                    MostrarMensaje("El período seleccionado no es válido.", "warning");
+                    return;
+                }
                 DateTime fechaDesde =
                     new DateTime(
                         anio,
@@ -328,22 +316,9 @@ namespace gym1._1
 
                 decimal monto;
 
-                string montoIngresado =
-                    txtMonto.Text
-                        .Trim()
-                        .Replace(".", ",");
-
-                if (!decimal.TryParse(
-                        montoIngresado,
-                        out monto) ||
-                    monto <= 0)
+                if (!ValidacionDatos.TryMonto(txtMonto.Text, out monto))
                 {
-                    MostrarMensaje(
-                        "El monto ingresado no es válido. Ejemplo: 25000 o 25000,50.",
-                        "warning"
-                    );
-
-                    txtMonto.Focus();
+                    MostrarMensaje("El monto es inválido. Usá hasta dos decimales y un máximo de 9999999999,99.", "warning");
                     return;
                 }
 
@@ -377,6 +352,12 @@ namespace gym1._1
                 string observacion =
                     txtObs.Text.Trim();
 
+                string errorPago = ValidacionDatos.ErrorPago(monto, observacion);
+                if (errorPago != null)
+                {
+                    MostrarMensaje(errorPago, "warning");
+                    return;
+                }
                 PagoDAL.RegistrarPago(
                     IdGimnasioActual,
                     idCliente,
@@ -402,7 +383,7 @@ namespace gym1._1
             catch (SqlException ex)
             {
                 // Pago duplicado desde SQL
-                if (ex.Number == 50002)
+                if (ex.Number == 50002 || ex.Number == 2601 || ex.Number == 2627)
                 {
                     MostrarMensaje(
                         "Ese mes ya se encuentra registrado como pagado.",
@@ -423,25 +404,29 @@ namespace gym1._1
                     return;
                 }
 
-                RegistrarError(
+                string codigoError = RegistrarError(
                     "Error SQL al registrar pago desde Deudores",
                     ex
                 );
 
                 MostrarMensaje(
-                    "No se pudo registrar el pago.",
+                    "No se pudo registrar el pago. Código: " + codigoError,
                     "danger"
                 );
             }
+            catch (ArgumentException ex)
+            {
+                MostrarMensaje(ex.Message, "warning");
+            }
             catch (Exception ex)
             {
-                RegistrarError(
+                string codigoError = RegistrarError(
                     "Error inesperado al registrar pago desde Deudores",
                     ex
                 );
 
                 MostrarMensaje(
-                    "Ocurrió un error inesperado al registrar el pago.",
+                    "Ocurrió un error inesperado al registrar el pago. Código: " + codigoError,
                     "danger"
                 );
             }
@@ -612,7 +597,7 @@ namespace gym1._1
         // REGISTRO DE ERRORES
         // =====================================================
 
-        private void RegistrarError(
+        private string RegistrarError(
             string descripcion,
             Exception ex)
         {
@@ -622,12 +607,8 @@ namespace gym1._1
                     .Substring(0, 8)
                     .ToUpperInvariant();
 
-            System.Diagnostics.Trace.TraceError(
-                "{0}. Código: {1}. Detalle: {2}",
-                descripcion,
-                codigoError,
-                ex
-            );
+            Conexxion.AppLogger.RegistrarError(codigoError, "Deudores.aspx", ex);
+            return codigoError;
         }
     }
 }

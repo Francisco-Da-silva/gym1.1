@@ -49,7 +49,7 @@
 				  host="smtp.gmail.com"
 				  port="587"
 				  userName="TU_EMAIL@gmail.com"
-				  password="TU_APP_PASSWORD"
+				  password=""
 				  enableSsl="true" />
 			</smtp>
 		</mailSettings>

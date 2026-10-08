@@ -1,0 +1,62 @@
+[
+  {
+    "test": "B01/B04 Default.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 Clientes.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 Pagos.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 Deudores.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 Registro.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 CrearAdministrador.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "B01/B04 AdministrarGimnasios.aspx",
+    "passed": true,
+    "evidence": "GET sin sesión -> http://localhost:51877/Login.aspx"
+  },
+  {
+    "test": "A01 login vacío",
+    "passed": true,
+    "evidence": "POST real sin excepción ni sesión autenticada"
+  },
+  {
+    "test": "I01 referencia",
+    "passed": true,
+    "evidence": "GET real, referencia y mensaje genérico"
+  },
+  {
+    "test": "I01 referencia inválida",
+    "passed": true,
+    "evidence": "Query manipulada no se refleja como HTML"
+  },
+  {
+    "test": "E03 mensaje entrada",
+    "passed": true,
+    "evidence": "Mensaje amigable fijo sin desactivar RequestValidation"
+  },
+  {
+    "test": "B06 POST anónimo no ejecuta evento",
+    "passed": true,
+    "evidence": "POST directo bloqueado antes de Click"
+  }
+]

@@ -1,0 +1,9 @@
+/* Fixture aislado. Nunca ejecutar en GYM_DB. */
+IF DB_NAME() <> 'GYM_QA_20261007' THROW 51099,'Base de pruebas incorrecta.',1;
+CREATE TABLE dbo.Gimnasios(IdGimnasio int IDENTITY PRIMARY KEY,Nombre nvarchar(100) NOT NULL,Email nvarchar(100) NOT NULL,Telefono nvarchar(30),FechaAlta datetime NOT NULL DEFAULT GETDATE(),Activo bit NOT NULL DEFAULT 1);
+CREATE TABLE dbo.Usuarios(IdUsuario int IDENTITY PRIMARY KEY,IdGimnasio int NOT NULL,Nombre nvarchar(100) NOT NULL,Email nvarchar(100) NOT NULL UNIQUE,PasswordHash nvarchar(255) NOT NULL,PasswordSalt nvarchar(255) NOT NULL,Rol nvarchar(30) NOT NULL,Activo bit NOT NULL DEFAULT 1);
+CREATE TABLE dbo.Clientes(IdCliente int IDENTITY PRIMARY KEY,IdGimnasio int NOT NULL,Nombre nvarchar(50) NOT NULL,Apellido nvarchar(50) NOT NULL,DNI nvarchar(20) NOT NULL,Telefono nvarchar(30),Email nvarchar(100),FechaNacimiento date NOT NULL,PlanPago nvarchar(30) NOT NULL,FechaAlta date NOT NULL DEFAULT CONVERT(date,GETDATE()));
+CREATE TABLE dbo.Pagos(IdPago int IDENTITY PRIMARY KEY,IdGimnasio int NOT NULL,IdCliente int NOT NULL,FechaPago datetime NOT NULL,FechaDesde date NOT NULL,FechaHasta date NOT NULL,Monto decimal(12,2) NOT NULL,Observacion nvarchar(200));
+CREATE TABLE dbo.PasswordResetTokens(IdToken int IDENTITY PRIMARY KEY,IdUsuario int NOT NULL,TokenHash nvarchar(100) NOT NULL UNIQUE,FechaCreacion datetime NOT NULL,FechaVencimiento datetime NOT NULL,Utilizado bit NOT NULL DEFAULT 0);
+INSERT dbo.Gimnasios(Nombre,Email,Activo) VALUES(N'QA Gimnasio A','gym-a@example.invalid',1),(N'QA Gimnasio B','gym-b@example.invalid',1),(N'QA Gimnasio Inactivo','gym-off@example.invalid',0);
+INSERT dbo.Clientes(IdGimnasio,Nombre,Apellido,DNI,FechaNacimiento,PlanPago,FechaAlta) VALUES(1,N'Cliente QA A',N'A','12345678','20000101','Full',DATEADD(month,-3,GETDATE())),(2,N'Cliente QA B',N'B','12345678','20000101','3xSemana',GETDATE());

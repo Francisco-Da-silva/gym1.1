@@ -51,8 +51,9 @@
             <h2>Ocurrió un error</h2>
 
             <p class="text-muted mt-3">
-                No pudimos completar la operación.
-                Por favor, intentá nuevamente.
+                <%= Request.QueryString["entrada"] == "invalida"
+                    ? "La entrada contiene contenido no permitido. Volvé al formulario y revisá los datos ingresados."
+                    : "No pudimos completar la operación. Por favor, intentá nuevamente." %>
             </p>
 
             <asp:Label
@@ -61,6 +62,21 @@
                 CssClass="d-block text-muted small mb-4">
             </asp:Label>
 
+            <asp:Panel
+    ID="pnlDetalleError"
+    runat="server"
+    Visible="false"
+    CssClass="alert alert-warning mt-4">
+
+    <h5>Detalle técnico (desarrollo)</h5>
+
+    <asp:Label
+        ID="lblDetalleError"
+        runat="server"
+        style="white-space: pre-wrap; font-family: monospace;">
+    </asp:Label>
+
+</asp:Panel>
             <asp:Button
                 ID="btnVolver"
                 runat="server"
@@ -68,7 +84,10 @@
                 CssClass="btn btn-primary"
                 OnClick="btnVolver_Click" />
 
+
+
         </div>
+
 
     </form>
 </body>

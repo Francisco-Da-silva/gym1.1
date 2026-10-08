@@ -1,0 +1,17 @@
+[
+  {
+    "test": "D12 sin pagos desde FechaAlta",
+    "passed": true,
+    "evidence": "Cliente de fixture sin pagos con alta tres meses antes; cuatro meses renderizados."
+  },
+  {
+    "test": "E01 maxlength HTML Pagos.aspx",
+    "passed": true,
+    "evidence": "Atributo maxlength200 presente en HTML real."
+  },
+  {
+    "test": "E01 maxlength HTML Deudores.aspx",
+    "passed": true,
+    "evidence": "Atributo maxlength200 presente en HTML real."
+  }
+]

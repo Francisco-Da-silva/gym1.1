@@ -14,10 +14,10 @@ namespace gym1._1
             {
                 string codigo = Request.QueryString["codigo"];
 
-                if (!string.IsNullOrWhiteSpace(codigo))
+                if (!string.IsNullOrWhiteSpace(codigo) && System.Text.RegularExpressions.Regex.IsMatch(codigo, "\\A[0-9A-F]{8}\\z"))
                 {
                     lblCodigoError.Text =
-                        "Código de referencia: " + codigo;
+                        Server.HtmlEncode("Código de referencia: " + codigo);
                 }
             }
         }

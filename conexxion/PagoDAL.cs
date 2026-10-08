@@ -104,6 +104,10 @@ namespace Conexxion
             decimal monto,
             string observacion)
         {
+            string error = ValidacionDatos.ErrorPago(monto, observacion);
+            if (error != null) throw new ArgumentException(error);
+            if (idGimnasio <= 0 || idCliente <= 0 || fechaHasta.Date < fechaDesde.Date)
+                throw new ArgumentException("El cliente o el período no es válido.");
             using (SqlConnection con =
                    new SqlConnection(connectionString))
             using (SqlCommand cmd =

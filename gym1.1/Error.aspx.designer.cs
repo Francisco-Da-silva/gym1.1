@@ -33,6 +33,24 @@ namespace gym1._1
         protected global::System.Web.UI.WebControls.Label lblCodigoError;
 
         /// <summary>
+        /// Control pnlDetalleError.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlDetalleError;
+
+        /// <summary>
+        /// Control lblDetalleError.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDetalleError;
+
+        /// <summary>
         /// Control btnVolver.
         /// </summary>
         /// <remarks>

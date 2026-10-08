@@ -85,7 +85,7 @@ namespace gym1._1
                 return;
             }
 
-            if (password.Length < 8)
+            if (password.Length < 8 || password.Length > 100)
             {
                 MostrarMensaje(
                     "La contraseña debe tener al menos 8 caracteres.",
@@ -154,6 +154,10 @@ namespace gym1._1
                 Context.ApplicationInstance
                     .CompleteRequest();
             }
+            catch (InvalidOperationException)
+            {
+                MostrarMensaje("El enlace no es válido o ya venció.", "warning");
+            }
             catch (Exception ex)
             {
                 string codigo =
@@ -162,11 +166,7 @@ namespace gym1._1
                         .Substring(0, 8)
                         .ToUpperInvariant();
 
-                System.Diagnostics.Trace.TraceError(
-                    "Error restableciendo contraseña. Código {0}: {1}",
-                    codigo,
-                    ex
-                );
+                Conexxion.AppLogger.RegistrarError(codigo, "RestablecerPassword.aspx", ex);
 
                 Response.Redirect(
                     "~/Error.aspx?codigo=" +

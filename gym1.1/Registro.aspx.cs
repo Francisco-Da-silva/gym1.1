@@ -163,6 +163,13 @@ namespace gym1._1
                     txtDni.Focus();
                     return;
                 }
+                string error = ValidacionDatos.ErrorCliente(txtNombre.Text.Trim(), txtApellido.Text.Trim(),
+                    dni, telefono, txtEmail.Text.Trim(), fechaNacimiento, Planpago.SelectedValue);
+                if (error != null)
+                {
+                    MostrarMensaje(error, "warning");
+                    return;
+                }
                 SP.AgregarCliente(
                     IdGimnasioActual,
                     txtNombre.Text.Trim(),
@@ -184,7 +191,7 @@ namespace gym1._1
             }
             catch (SqlException ex)
             {
-                if (ex.Number == 50001)
+                if (ex.Number == 50001 || ex.Number == 2601 || ex.Number == 2627)
                 {
                     MostrarMensaje(
                         "Ya existe un cliente con ese DNI en este gimnasio.",
@@ -227,17 +234,18 @@ namespace gym1._1
                     txtDni.Focus();
                     return;
                 }
+                if (ex.Number == 50005)
+                {
+                    MostrarMensaje("Revisá los datos del cliente ingresados.", "warning");
+                    return;
+                }
                 string codigoError =
                     Guid.NewGuid()
                         .ToString("N")
                         .Substring(0, 8)
                         .ToUpperInvariant();
 
-                System.Diagnostics.Trace.TraceError(
-                    "Error SQL al registrar cliente. Código: {0}. Detalle: {1}",
-                    codigoError,
-                    ex
-                );
+                Conexxion.AppLogger.RegistrarError(codigoError, "Registro.aspx", ex);
 
                 MostrarMensaje(
                     "No se pudo registrar el cliente. Código: " + codigoError,
@@ -252,11 +260,7 @@ namespace gym1._1
                         .Substring(0, 8)
                         .ToUpperInvariant();
 
-                System.Diagnostics.Trace.TraceError(
-                    "Error inesperado al registrar cliente. Código: {0}. Detalle: {1}",
-                    codigoError,
-                    ex
-                );
+                Conexxion.AppLogger.RegistrarError(codigoError, "Registro.aspx", ex);
 
                 MostrarMensaje(
                     "Ocurrió un error inesperado. Código: " + codigoError,
@@ -276,16 +280,22 @@ namespace gym1._1
         {
             int id = Convert.ToInt32(gvClientes.DataKeys[e.RowIndex].Value);
 
-            string cn = "Server=.;Database=GYM_DB;Trusted_Connection=True";
-
-            using (SqlConnection con = new SqlConnection(cn))
+            try
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand("DELETE FROM Clientes WHERE IdCliente=@id", con);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                if (!SP.EliminarCliente(IdGimnasioActual, id))
+                    MostrarMensaje("No se pudo validar el cliente seleccionado.", "warning");
             }
-
+            catch (SqlException ex)
+            {
+                if (ex.Number == 547)
+                    MostrarMensaje("No se puede eliminar un cliente que tiene pagos registrados.", "warning");
+                else
+                {
+                    string codigo = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpperInvariant();
+                    AppLogger.RegistrarError(codigo, "Eliminar cliente", ex);
+                    MostrarMensaje("No se pudo eliminar el cliente. Código: " + codigo, "danger");
+                }
+            }
             CargarClientes();
         }
     }

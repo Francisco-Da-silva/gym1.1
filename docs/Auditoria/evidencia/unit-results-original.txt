@@ -1,0 +1,62 @@
+PASS D07 es-AR entero
+PASS D07 es-AR coma
+PASS D07 es-AR punto legado
+PASS D04-D08 es-AR rechaza 0
+PASS D04-D08 es-AR rechaza -1000
+PASS D04-D08 es-AR rechaza abc
+PASS D04-D08 es-AR rechaza --
+PASS D04-D08 es-AR rechaza 10000000000
+PASS D04-D08 es-AR rechaza 1,001
+PASS D04-D08 es-AR rechaza 1.000,50
+PASS D04-D08 es-AR rechaza 9999999999,999
+PASS D08 máximo exacto es-AR
+PASS D07 en-US entero
+PASS D07 en-US coma
+PASS D07 en-US punto legado
+PASS D04-D08 en-US rechaza 0
+PASS D04-D08 en-US rechaza -1000
+PASS D04-D08 en-US rechaza abc
+PASS D04-D08 en-US rechaza --
+PASS D04-D08 en-US rechaza 10000000000
+PASS D04-D08 en-US rechaza 1,001
+PASS D04-D08 en-US rechaza 1.000,50
+PASS D04-D08 en-US rechaza 9999999999,999
+PASS D08 máximo exacto en-US
+PASS E01 200
+PASS E01 201
+PASS Observación opcional
+PASS F04 email inválido
+PASS F04 email inválido
+PASS F04 email inválido
+PASS F04 email inválido
+PASS F04 email inválido
+PASS F04 válido
+PASS F04 opcional
+PASS F07 José
+PASS F07 Muñoz
+PASS F07 María José
+PASS F07 D'Angelo
+PASS F07 Ana-María
+PASS F08 50
+PASS F08 51 nombre
+PASS F08 51 apellido
+PASS F09 flexible
+PASS F09 flexible
+PASS F09 flexible
+PASS F09 21
+PASS F03 DNI inválido
+PASS F03 DNI inválido
+PASS F03 DNI inválido
+PASS F03 DNI inválido
+PASS F03 DNI inválido
+PASS F05 fecha futura
+PASS F06 1899
+PASS F10 Full
+PASS F10 3xSemana
+PASS F10 manipulado
+PASS A05 salt aleatorio
+PASS A05 password válida
+PASS A03 password incorrecta
+PASS A05 hash32
+PASS Reset token aleatorio
+TOTAL 61 FAILED 0

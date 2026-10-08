@@ -196,6 +196,29 @@ namespace Conexxion
                 {
                     try
                     {
+                        const string invalidar = @"
+                            UPDATE dbo.PasswordResetTokens
+                            SET Utilizado = 1
+                            WHERE TokenHash = @TokenHash AND IdUsuario = @IdUsuario
+                              AND Utilizado = 0 AND FechaVencimiento >= GETDATE();";
+
+                        using (SqlCommand cmd =
+                               new SqlCommand(
+                                   invalidar,
+                                   con,
+                                   tx))
+                        {
+                            cmd.Parameters.Add(
+                                "@TokenHash",
+                                SqlDbType.NVarChar,
+                                100
+                            ).Value = tokenHash;
+
+                            cmd.Parameters.Add("@IdUsuario", SqlDbType.Int).Value = idUsuario;
+                            if (cmd.ExecuteNonQuery() != 1)
+                                throw new InvalidOperationException("El enlace no es válido o ya venció.");
+                        }
+
                         const string actualizar = @"
                             UPDATE dbo.Usuarios
                             SET PasswordHash = @PasswordHash,
@@ -224,26 +247,6 @@ namespace Conexxion
                                 "@IdUsuario",
                                 SqlDbType.Int
                             ).Value = idUsuario;
-
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        const string invalidar = @"
-                            UPDATE dbo.PasswordResetTokens
-                            SET Utilizado = 1
-                            WHERE TokenHash = @TokenHash;";
-
-                        using (SqlCommand cmd =
-                               new SqlCommand(
-                                   invalidar,
-                                   con,
-                                   tx))
-                        {
-                            cmd.Parameters.Add(
-                                "@TokenHash",
-                                SqlDbType.NVarChar,
-                                100
-                            ).Value = tokenHash;
 
                             cmd.ExecuteNonQuery();
                         }

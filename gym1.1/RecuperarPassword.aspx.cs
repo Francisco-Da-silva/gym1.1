@@ -55,9 +55,7 @@ namespace gym1._1
                     );
 
                     string enlace =
-                        Request.Url.GetLeftPart(
-                            UriPartial.Authority
-                        ) +
+                        EmailService.ObtenerOrigenRecuperacion(Request) +
                         ResolveUrl(
                             "~/RestablecerPassword.aspx"
                         ) +
@@ -89,11 +87,7 @@ namespace gym1._1
                         .Substring(0, 8)
                         .ToUpperInvariant();
 
-                System.Diagnostics.Trace.TraceError(
-                    "Error recuperación contraseña. Código: {0}. Detalle: {1}",
-                    codigoError,
-                    ex
-                );
+                Conexxion.AppLogger.RegistrarError(codigoError, "RecuperarPassword.aspx", ex);
 
                 MostrarMensaje(
                     "No se pudo completar la operación. Código: " + codigoError,

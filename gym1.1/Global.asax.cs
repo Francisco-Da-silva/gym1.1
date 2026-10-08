@@ -33,16 +33,15 @@ namespace gym1._1
 
             // Mientras desarrollamos, el error aparece
             // en la ventana Output de Visual Studio.
-            Trace.TraceError(
-                "Código: {0} | Error: {1}",
-                codigoError,
-                exception);
+            Conexxion.AppLogger.RegistrarError(codigoError, "Global.asax", exception);
 
             Server.ClearError();
 
+            bool entradaInvalida = exception is HttpRequestValidationException ||
+                exception.GetBaseException() is HttpRequestValidationException;
             string rutaError =
                 "~/Error.aspx?codigo=" +
-                HttpUtility.UrlEncode(codigoError);
+                HttpUtility.UrlEncode(codigoError) + (entradaInvalida ? "&entrada=invalida" : "");
 
             Response.Redirect(rutaError, false);
             Context.ApplicationInstance.CompleteRequest();

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace gym1._1
 {
-    public partial class _Default : Page
+    public partial class _Default : PaginaProtegida
     {
         protected void Page_Load(object sender, EventArgs e)
         {

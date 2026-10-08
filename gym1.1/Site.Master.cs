@@ -1,33 +1,145 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace gym1._1
 {
     public partial class SiteMaster : MasterPage
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+        // ==========================================
+        // PAGE LOAD
+        // ==========================================
 
+        protected void Page_Load(
+            object sender,
+            EventArgs e)
+        {
+            // Evitamos que páginas protegidas
+            // queden almacenadas en caché.
+            Response.Cache.SetCacheability(
+                HttpCacheability.NoCache
+            );
+
+            Response.Cache.SetNoStore();
+
+            Response.Cache.SetExpires(
+                DateTime.UtcNow.AddYears(-1)
+            );
+
+            Response.Cache.SetRevalidation(
+                HttpCacheRevalidation.AllCaches
+            );
+
+
+            // Configuramos las opciones del menú
+            // según el rol del usuario.
+            ConfigurarMenuSuperAdministrador();
         }
 
-        protected void btnCerrarSesion_Click(object sender, EventArgs e)
+
+        // ==========================================
+        // CONFIGURAR MENÚ SUPERADMINISTRADOR
+        // ==========================================
+
+        private void ConfigurarMenuSuperAdministrador()
         {
+            // Por defecto nunca mostramos
+            // las herramientas de SuperAdmin.
+            pnlSuperAdministrador.Visible = false;
+
+
+            // Si no existe una sesión válida,
+            // dejamos el panel oculto.
+            if (Session["IdUsuario"] == null ||
+                Session["Rol"] == null)
+            {
+                return;
+            }
+
+
+            string rol =
+                Convert.ToString(
+                    Session["Rol"]
+                ).Trim();
+
+
+            // Solo mostramos las opciones especiales
+            // al SuperAdministrador.
+            if (rol.Equals(
+                "SuperAdministrador",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                pnlSuperAdministrador.Visible = true;
+            }
+        }
+
+
+        // ==========================================
+        // CERRAR SESIÓN
+        // ==========================================
+
+        protected void btnCerrarSesion_Click(
+            object sender,
+            EventArgs e)
+        {
+            // Eliminamos todos los datos
+            // almacenados en la sesión.
             Session.Clear();
+
             Session.Abandon();
+
+
+            // ======================================
+            // ELIMINAR COOKIE DE SESIÓN
+            // ======================================
 
             if (Request.Cookies["ASP.NET_SessionId"] != null)
             {
-                Response.Cookies["ASP.NET_SessionId"].Value = "";
-                Response.Cookies["ASP.NET_SessionId"].Expires =
-                    DateTime.Now.AddYears(-1);
+                HttpCookie cookieSesion =
+                    new HttpCookie(
+                        "ASP.NET_SessionId",
+                        string.Empty
+                    );
+
+                cookieSesion.Expires =
+                    DateTime.Now.AddDays(-1);
+
+                cookieSesion.HttpOnly =
+                    true;
+
+                Response.Cookies.Add(
+                    cookieSesion
+                );
             }
 
-            Response.Redirect("~/Login.aspx", false);
-            Context.ApplicationInstance.CompleteRequest();
+
+            // ======================================
+            // ======================================
+            // EVITAR CACHÉ
+            // ======================================
+
+            Response.Cache.SetCacheability(
+                HttpCacheability.NoCache
+            );
+
+            Response.Cache.SetNoStore();
+
+            Response.Cache.SetExpires(
+                DateTime.UtcNow.AddYears(-1)
+            );
+
+
+            // ======================================
+            // VOLVER AL LOGIN
+            // ======================================
+
+            Response.Redirect(
+                "~/Login.aspx",
+                false
+            );
+
+            Context.ApplicationInstance
+                .CompleteRequest();
         }
     }
 }

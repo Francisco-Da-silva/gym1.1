@@ -160,7 +160,7 @@
             <!-- Observación -->
             <div class="col-md-9">
                 <label class="form-label">Observación (opcional)</label>
-                <asp:TextBox ID="txtObs" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2" />
+                <asp:TextBox ID="txtObs" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2"  MaxLength="200" />
             </div>
 
         </div>
