@@ -14,6 +14,14 @@ namespace gym1._1
     public partial class SiteMaster
     {
         protected global::System.Web.UI.WebControls.PlaceHolder menuGimnasio;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navInicio;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navPagos;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navClientes;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navRegistro;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navDeudores;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navGimnasios;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor navCrearGimnasio;
+
 
         /// <summary>
         /// Control pnlSuperAdministrador.
@@ -22,7 +30,7 @@ namespace gym1._1
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSuperAdministrador;
+        protected global::System.Web.UI.WebControls.PlaceHolder pnlSuperAdministrador;
 
         /// <summary>
         /// Control btnCerrarSesion.

@@ -1,322 +1,62 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="gym1._1.SiteMaster" %>
-
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="gym1._1.SiteMaster" %>
 <!DOCTYPE html>
-
-<html lang="es">
+<html lang="es" data-bs-theme="light">
 <head runat="server">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%: Page.Title %> - Gym Manager</title>
-
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Bootstrap Icons (para iconitos del menú) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-
-    <style>
-        body {
-            background-color: #0f172a; /* azul oscuro nocturno */
-        }
-
-        .layout-root {
-            min-height: 100vh;
-        }
-
-        /* SIDEBAR GYM */
-        .sidebar-gym {
-            width: 250px;
-            background: radial-gradient(circle at top left, #22c55e 0, #0f172a 40%, #020617 100%);
-            color: #e5e7eb;
-            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .sidebar-gym .brand {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar-gym .brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: #22c55e;
-        }
-
-        .sidebar-gym .brand-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            letter-spacing: .03em;
-        }
-
-        .sidebar-gym .nav-link {
-            color: #e5e7eb;
-            border-radius: .5rem;
-            padding: .55rem .75rem;
-            font-size: .95rem;
-            display: flex;
-            align-items: center;
-            gap: .55rem;
-            transition: all .15s ease-in-out;
-        }
-
-        .sidebar-gym .nav-link i {
-            font-size: 1.1rem;
-        }
-
-        .sidebar-gym .nav-link:hover {
-            background-color: rgba(15, 23, 42, 0.85);
-            color: #22c55e;
-            transform: translateX(2px);
-        }
-
-        .sidebar-gym .nav-link.active {
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            color: #020617;
-            font-weight: 600;
-        }
-
-        .sidebar-footer {
-            font-size: .75rem;
-            color: #9ca3af;
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-area {
-            background: radial-gradient(circle at top right, #1f2937 0, #020617 55%);
-            color: #e5e7eb;
-        }
-
-        .main-header {
-            border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-        }
-
-        .main-card {
-            background-color: #020617;
-            border-radius: 1rem;
-            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
-        }
-
-        .main-card h3,
-        .main-card h2 {
-            color: #22c55e;
-        }
-
-        /* Para que tus GridView bootstrap se vean bien sobre fondo oscuro */
-        .table {
-            background-color: #020617;
-            color: #e5e7eb;
-        }
-
-        .table thead {
-            background-color: #111827;
-        }
-
-        .table tbody tr:hover {
-            background-color: #0b1120;
-        }
-
-        .btn-success {
-            background: linear-gradient(90deg, #22c55e, #16a34a);
-            border: none;
-        }
-
-        .btn-danger {
-            background: linear-gradient(90deg, #ef4444, #b91c1c);
-            border: none;
-        }
-    </style>
+    <link href="~/Content/Site.css" rel="stylesheet" runat="server" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" runat="server" />
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido</a>
     <form runat="server">
         <asp:ScriptManager runat="server" />
-
-        <div class="d-flex layout-root">
-
-            <!-- SIDEBAR LATERAL GYM -->
-           <ul class="nav nav-pills flex-column mb-auto">
-
-    <!-- ========================================= -->
-    <!-- OPCIONES GENERALES -->
-    <!-- Todos los usuarios logueados -->
-    <!-- ========================================= -->
-
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white"
-           runat="server"
-           href="~/">
-
-            <i class="bi bi-house-door"></i>
-            Inicio
-
-        </a>
-    </li>
-
-
-    <asp:PlaceHolder ID="menuGimnasio" runat="server" Visible="false">
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white"
-           runat="server"
-           href="~/Pagos">
-
-            <i class="bi bi-cash-coin"></i>
-            Pagos
-
-        </a>
-    </li>
-
-
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white"
-           runat="server"
-           href="~/Clientes">
-
-            <i class="bi bi-people"></i>
-            Listado de clientes
-
-        </a>
-    </li>
-
-
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white"
-           runat="server"
-           href="~/Registro">
-
-            <i class="bi bi-person-plus"></i>
-            Registrar clientes
-
-        </a>
-    </li>
-
-
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white"
-           runat="server"
-           href="~/Deudores">
-
-            <i class="bi bi-exclamation-triangle"></i>
-            Deudores
-
-        </a>
-    </li>
-
-
-    </asp:PlaceHolder>
-
-    <!-- ========================================= -->
-    <!-- OPCIONES EXCLUSIVAS SUPERADMINISTRADOR -->
-    <!-- ========================================= -->
-
-    <asp:Panel
-        ID="pnlSuperAdministrador"
-        runat="server"
-        Visible="false">
-
-        <li class="nav-item mt-3 mb-2">
-
-            <span class="text-success small fw-bold px-2">
-                SUPERADMINISTRADOR
-            </span>
-
-        </li>
-
-
-        <li class="nav-item mb-1">
-
-            <a class="nav-link text-white"
-               runat="server"
-               href="~/AdministrarGimnasios.aspx">
-
-                <i class="bi bi-buildings"></i>
-                Administrar gimnasios
-
-            </a>
-
-        </li>
-
-
-        <li class="nav-item mb-1">
-
-            <a class="nav-link text-white"
-               runat="server"
-               href="~/CrearAdministrador.aspx">
-
-                <i class="bi bi-building-add"></i>
-                Registrar gimnasio
-
-            </a>
-
-        </li>
-
-    </asp:Panel>
-
-
-    <!-- ========================================= -->
-    <!-- CUENTA Y CERRAR SESIÓN -->
-    <!-- ========================================= -->
-
-    <li class="nav-item mb-1">
-        <a class="nav-link text-white" runat="server" href="~/Default.aspx#mi-cuenta">
-            <i class="bi bi-person-circle"></i>
-            Mi cuenta
-        </a>
-    </li>
-
-    <li class="nav-item mt-3">
-
-        <asp:LinkButton
-            ID="btnCerrarSesion"
-            runat="server"
-            CssClass="nav-link text-white"
-            CausesValidation="false"
-            OnClick="btnCerrarSesion_Click">
-
-            <i class="bi bi-box-arrow-right"></i>
-            Cerrar sesión
-
-        </asp:LinkButton>
-
-    </li>
-
-</ul>
-
-
-
-                <div class="mt-auto sidebar-footer">
-                    &copy; <%: DateTime.Now.Year %> - Gym Manager
-                    <br />
-                    <span class="text-success">#NoPainNoGain</span>
+        <div class="layout-root">
+            <aside id="gym-sidebar" class="sidebar-gym" aria-label="Menú principal">
+                <button id="menu-close" class="icon-button sidebar-close" type="button" aria-label="Cerrar menú"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+                <a class="brand" href="<%= ResolveUrl("~/Default.aspx") %>" aria-label="Gym Manager, inicio">
+                    <i class="bi bi-grid-1x2 brand-icon" aria-hidden="true"></i><span class="sidebar-label">Gym Manager</span>
+                </a>
+                <div class="sidebar-caption">Gestión</div>
+                <nav aria-label="Secciones"><ul class="nav flex-column">
+<li class="nav-item"><a id="navInicio" runat="server" href="~/Default.aspx" class="nav-link" aria-label="Inicio" title="Inicio"><i class="bi bi-house-door" aria-hidden="true"></i><span class="sidebar-label">Inicio</span></a></li>
+<asp:PlaceHolder ID="menuGimnasio" runat="server" Visible="false">
+<li class="nav-item"><a id="navPagos" runat="server" href="~/Pagos.aspx" class="nav-link" aria-label="Pagos" title="Pagos"><i class="bi bi-cash-coin" aria-hidden="true"></i><span class="sidebar-label">Pagos</span></a></li>
+<li class="nav-item"><a id="navClientes" runat="server" href="~/Clientes.aspx" class="nav-link" aria-label="Listado de clientes" title="Listado de clientes"><i class="bi bi-people" aria-hidden="true"></i><span class="sidebar-label">Listado de clientes</span></a></li>
+<li class="nav-item"><a id="navRegistro" runat="server" href="~/Registro.aspx" class="nav-link" aria-label="Registrar clientes" title="Registrar clientes"><i class="bi bi-person-plus" aria-hidden="true"></i><span class="sidebar-label">Registrar clientes</span></a></li>
+<li class="nav-item"><a id="navDeudores" runat="server" href="~/Deudores.aspx" class="nav-link" aria-label="Deudores" title="Deudores"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span class="sidebar-label">Deudores</span></a></li>
+</asp:PlaceHolder>
+<asp:PlaceHolder ID="pnlSuperAdministrador" runat="server" Visible="false">
+<li class="sidebar-caption">Plataforma</li>
+<li class="nav-item"><a id="navGimnasios" runat="server" href="~/AdministrarGimnasios.aspx" class="nav-link" aria-label="Administrar gimnasios" title="Administrar gimnasios"><i class="bi bi-buildings" aria-hidden="true"></i><span class="sidebar-label">Administrar gimnasios</span></a></li>
+<li class="nav-item"><a id="navCrearGimnasio" runat="server" href="~/CrearAdministrador.aspx" class="nav-link" aria-label="Registrar gimnasio" title="Registrar gimnasio"><i class="bi bi-building-add" aria-hidden="true"></i><span class="sidebar-label">Registrar gimnasio</span></a></li>
+</asp:PlaceHolder>
+                </ul></nav>
+                <div class="sidebar-account">
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Default.aspx#mi-cuenta" aria-label="Mi cuenta" title="Mi cuenta"><i class="bi bi-person-circle" aria-hidden="true"></i><span class="sidebar-label">Mi cuenta</span></a></li>
+                        <li class="nav-item"><asp:LinkButton ID="btnCerrarSesion" runat="server" CssClass="nav-link" CausesValidation="false" OnClick="btnCerrarSesion_Click" aria-label="Cerrar sesión" title="Cerrar sesión"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="sidebar-label">Cerrar sesión</span></asp:LinkButton></li>
+                    </ul>
+                    <div class="sidebar-footer">&copy; <%: DateTime.Now.Year %> Gym Manager</div>
                 </div>
-
-            <!-- CONTENIDO PRINCIPAL -->
-            <main class="flex-grow-1 main-area d-flex flex-column">
-                <!-- Cabecera de cada página -->
+            </aside>
+            <button id="menu-backdrop" type="button" class="sidebar-backdrop" aria-label="Cerrar menú" tabindex="-1" hidden></button>
+            <div class="main-area">
                 <header class="main-header">
-                    <div class="container py-3">
-                        <h1 class="h4 mb-0"><%: Page.Title %></h1>
+                    <div class="header-leading">
+                        <button id="menu-toggle" type="button" class="icon-button" aria-controls="gym-sidebar" aria-expanded="true" aria-label="Contraer menú" hidden><i class="bi bi-list" aria-hidden="true"></i></button>
+                        <div><div class="header-context"><%: NombreContexto %></div><h1><%: Page.Title %></h1></div>
                     </div>
+                    <div class="header-account"><strong><%: Convert.ToString(Session["NombreUsuario"]) %></strong><span><%: TipoCuenta %></span></div>
                 </header>
-
-                <!-- Zona de contenido -->
-                <div class="container py-4 flex-grow-1">
-                    <asp:ContentPlaceHolder ID="MainContent" runat="server" />
-                </div>
-            </main>
+                <main id="main-content" class="page-content" tabindex="-1"><asp:ContentPlaceHolder ID="MainContent" runat="server" /></main>
+            </div>
         </div>
     </form>
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<%= ResolveUrl("~/Scripts/gym-shell.js") %>" defer></script>
 </body>
 </html>

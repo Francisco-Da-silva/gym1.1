@@ -34,6 +34,7 @@ namespace gym1._1
             // Configuramos las opciones del menú
             // según el rol del usuario.
             ConfigurarMenuSuperAdministrador();
+            ConfigurarPaginaActiva();
         }
 
 
@@ -77,6 +78,32 @@ namespace gym1._1
             }
         }
 
+
+        protected string TipoCuenta
+        {
+            get { return string.Equals(Convert.ToString(Session["Rol"]).Trim(), "SuperAdministrador", StringComparison.OrdinalIgnoreCase) ? "Superadministrador" : "Administrador de gimnasio"; }
+        }
+
+        protected string NombreContexto
+        {
+            get { return TipoCuenta == "Superadministrador" ? "Administración de la plataforma" : Convert.ToString(Session["NombreGimnasio"]); }
+        }
+
+        private void ConfigurarPaginaActiva()
+        {
+            string pagina = System.IO.Path.GetFileNameWithoutExtension(Request.AppRelativeCurrentExecutionFilePath);
+            if (string.IsNullOrEmpty(pagina)) pagina = "Default";
+            var enlaces = new[] { navInicio, navPagos, navClientes, navRegistro, navDeudores, navGimnasios, navCrearGimnasio };
+            foreach (var enlace in enlaces)
+            {
+                string destino = System.IO.Path.GetFileNameWithoutExtension(enlace.HRef);
+                if (string.Equals(pagina, destino, StringComparison.OrdinalIgnoreCase))
+                {
+                    enlace.Attributes["class"] = "nav-link active";
+                    enlace.Attributes["aria-current"] = "page";
+                }
+            }
+        }
 
         // ==========================================
         // CERRAR SESIÓN
