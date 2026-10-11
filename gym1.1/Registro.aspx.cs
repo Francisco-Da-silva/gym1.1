@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 namespace gym1._1
 {
-    public partial class Registro : PaginaProtegida
+    public partial class Registro : PaginaGimnasio
     {
 
         protected void Page_Load(object sender, EventArgs e)

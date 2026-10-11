@@ -3,7 +3,7 @@ using System;
 
 namespace gym1._1
 {
-    public partial class Clientes : PaginaProtegida
+    public partial class Clientes : PaginaGimnasio
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 namespace gym1._1
 {
-    public partial class Pagos : PaginaProtegida
+    public partial class Pagos : PaginaGimnasio
     {
         protected string ClientesJson { get; private set; } = "[]";
 

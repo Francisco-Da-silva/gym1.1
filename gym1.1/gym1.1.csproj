@@ -192,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InicioSesionSeguro.cs" />
+    <Compile Include="PaginaGimnasio.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="AdministrarGimnasios.aspx.cs">
       <DependentUpon>AdministrarGimnasios.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

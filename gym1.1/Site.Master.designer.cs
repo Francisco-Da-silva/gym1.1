@@ -13,6 +13,7 @@ namespace gym1._1
 
     public partial class SiteMaster
     {
+        protected global::System.Web.UI.WebControls.PlaceHolder menuGimnasio;
 
         /// <summary>
         /// Control pnlSuperAdministrador.

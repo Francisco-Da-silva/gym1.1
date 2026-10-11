@@ -21,3 +21,10 @@ Una vez recuperada la disponibilidad: obtener respaldo COPY_ONLY CHECKSUM y REST
 ## Producción
 
 Configurar GYM_SMTP_USER, GYM_SMTP_PASSWORD y GYM_PUBLIC_BASE_URL desde el entorno del proceso. Revocar/reemplazar la credencial SMTP previamente versionada; retirar un valor del código no lo elimina del historial Git. Release necesita HTTPS (cookies Secure); SQL remoto necesita TLS con certificado validado. Reiniciar el proceso después de actualizar variables. No se probó correo real ni publicación Release.
+
+
+## Separación de superadministrador — 11/10/2026
+
+Después de preparar y sembrar el fixture, ejecutar `superadmin-fixture-extra.sql` en GYM_QA_20261007. Agrega una cuenta administrativa de plataforma y una segunda cuenta para un gimnasio, con datos ficticios, para comprobar exclusión y conteo único.
+
+Servir una copia de la aplicación conectada exclusivamente al fixture en `http://localhost:51878`. Ejecutar `python superadmin-roles-http.py`:30 comprobaciones. Valida inicio/menú por rol, resumen, URLs con y sin .aspx, POST bloqueados, funciones administrativas, acceso anónimo y logout. No usa cuentas ni modifica datos de la base real. El JSON de resultados se genera junto al script y está ignorado por Git.

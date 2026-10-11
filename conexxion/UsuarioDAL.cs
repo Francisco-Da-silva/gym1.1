@@ -529,6 +529,12 @@ namespace Conexcion
             ON u.IdGimnasio = g.IdGimnasio
             AND u.Rol IN ('Gimnasio', 'Administrador')
 
+        -- Una cuenta administrativa de plataforma no representa un gimnasio.
+        WHERE EXISTS (SELECT 1 FROM dbo.Usuarios ug WHERE ug.IdGimnasio=g.IdGimnasio
+                      AND ug.Rol IN ('Gimnasio', 'Administrador'))
+           OR NOT EXISTS (SELECT 1 FROM dbo.Usuarios us WHERE us.IdGimnasio=g.IdGimnasio
+                          AND us.Rol='SuperAdministrador')
+
         ORDER BY
             g.Activo DESC,
             g.Nombre ASC;";

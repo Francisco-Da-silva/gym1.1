@@ -46,6 +46,7 @@ namespace gym1._1
             // Por defecto nunca mostramos
             // las herramientas de SuperAdmin.
             pnlSuperAdministrador.Visible = false;
+            menuGimnasio.Visible = false;
 
 
             // Si no existe una sesión válida,
@@ -62,6 +63,9 @@ namespace gym1._1
                     Session["Rol"]
                 ).Trim();
 
+
+            menuGimnasio.Visible = rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ||
+                rol.Equals("Gimnasio", StringComparison.OrdinalIgnoreCase);
 
             // Solo mostramos las opciones especiales
             // al SuperAdministrador.

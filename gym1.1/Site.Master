@@ -163,6 +163,7 @@
     </li>
 
 
+    <asp:PlaceHolder ID="menuGimnasio" runat="server" Visible="false">
     <li class="nav-item mb-1">
         <a class="nav-link text-white"
            runat="server"
@@ -210,6 +211,8 @@
         </a>
     </li>
 
+
+    </asp:PlaceHolder>
 
     <!-- ========================================= -->
     <!-- OPCIONES EXCLUSIVAS SUPERADMINISTRADOR -->
@@ -260,8 +263,15 @@
 
 
     <!-- ========================================= -->
-    <!-- CERRAR SESIÓN -->
+    <!-- CUENTA Y CERRAR SESIÓN -->
     <!-- ========================================= -->
+
+    <li class="nav-item mb-1">
+        <a class="nav-link text-white" runat="server" href="~/Default.aspx#mi-cuenta">
+            <i class="bi bi-person-circle"></i>
+            Mi cuenta
+        </a>
+    </li>
 
     <li class="nav-item mt-3">
 

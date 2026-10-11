@@ -9,6 +9,42 @@
     ContentPlaceHolderID="MainContent"
     runat="server">
 
+    <asp:PlaceHolder ID="inicioPlataforma" runat="server" Visible="false">
+        <div class="main-card p-4 p-lg-5 mb-4">
+            <span class="badge bg-success mb-3">Superadministrador</span>
+            <h2 class="fw-bold">Administración de la plataforma</h2>
+            <p class="text-secondary">Gestioná los gimnasios y sus cuentas de acceso desde un solo lugar.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="AdministrarGimnasios.aspx" class="btn btn-success">Administrar gimnasios</a>
+                <a href="CrearAdministrador.aspx" class="btn btn-outline-success">Registrar gimnasio</a>
+            </div>
+        </div>
+        <asp:Panel ID="errorResumen" runat="server" Visible="false" CssClass="alert alert-warning" role="alert">
+            No pudimos cargar el resumen de gimnasios. Intentá nuevamente.
+            Referencia: <asp:Literal ID="referenciaError" runat="server" Mode="Encode" />
+        </asp:Panel>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4"><div class="main-card p-4 h-100">
+                <h3 class="h6 text-secondary">Gimnasios registrados</h3>
+                <p class="display-6 mb-0"><asp:Literal ID="totalGimnasios" runat="server" Mode="Encode" Text="—" /></p>
+            </div></div>
+            <div class="col-md-4"><div class="main-card p-4 h-100">
+                <h3 class="h6 text-secondary">Gimnasios activos</h3>
+                <p class="display-6 text-success mb-0"><asp:Literal ID="gimnasiosActivos" runat="server" Mode="Encode" Text="—" /></p>
+            </div></div>
+            <div class="col-md-4"><div class="main-card p-4 h-100">
+                <h3 class="h6 text-secondary">Gimnasios inactivos</h3>
+                <p class="display-6 text-warning mb-0"><asp:Literal ID="gimnasiosInactivos" runat="server" Mode="Encode" Text="—" /></p>
+            </div></div>
+        </div>
+        <div class="main-card p-4 mb-4">
+            <h3 class="h5">Gimnasios y cuentas de acceso</h3>
+            <p class="text-secondary">Consultá sus datos y administrá su estado de acceso. Al registrar un gimnasio se crea también su cuenta administradora.</p>
+            <a href="AdministrarGimnasios.aspx" class="text-success">Ver gimnasios y cuentas</a>
+        </div>
+    </asp:PlaceHolder>
+
+    <asp:PlaceHolder ID="inicioGimnasio" runat="server" Visible="false">
     <div class="container-fluid py-4">
 
         <!-- HERO -->
@@ -330,5 +366,16 @@
         </div>
 
     </div>
+
+    </asp:PlaceHolder>
+
+    <section id="mi-cuenta" class="main-card p-4 mt-4">
+        <h2 class="h4">Mi cuenta</h2>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9"><asp:Literal ID="cuentaNombre" runat="server" Mode="Encode" /></dd>
+            <dt class="col-sm-3">Correo de acceso</dt><dd class="col-sm-9"><asp:Literal ID="cuentaEmail" runat="server" Mode="Encode" /></dd>
+            <dt class="col-sm-3">Tipo de cuenta</dt><dd class="col-sm-9"><asp:Literal ID="cuentaRol" runat="server" Mode="Encode" /></dd>
+        </dl>
+    </section>
 
 </asp:Content>
