@@ -1,4 +1,4 @@
-/* Gym Manager — Verde Profesional. Colores compartidos por todos los componentes. */
+﻿/* Gym Manager — Verde Profesional. Colores compartidos por todos los componentes. */
 :root {
   --gm-primary: #176B50;
   --gm-sidebar: #142E28;
@@ -124,3 +124,9 @@ button, .btn { min-height: 44px; }
   .client-suggestion small { margin-left: auto; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+.auth-page { min-height:100vh; }
+.login-card, .registro-card, .error-card, .recovery-card, .reset-card { width:100%; max-width:460px; margin:auto; padding:2rem; background:var(--gm-surface); border:1px solid var(--gm-border); border-radius:var(--gm-radius); box-shadow:var(--gm-shadow); color:var(--gm-text); }
+.registro-card { max-width:800px; }
+.login-icon, .registro-icon { color:var(--gm-primary); font-size:2rem; text-align:center; }
+.seccion-titulo { color:var(--gm-primary); font-weight:700; border-bottom:1px solid var(--gm-border); padding:.75rem 0; margin-bottom:1rem; }

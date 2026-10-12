@@ -22,7 +22,7 @@
         <div class="row g-3">
 
             <div class="col-md-6">
-                <label class="form-label">Nombre</label>
+                <asp:Label runat="server" AssociatedControlID="txtNombre" class="form-label">Nombre</asp:Label>
 
                 <asp:TextBox ID="txtNombre"
                     runat="server"
@@ -31,7 +31,7 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Apellido</label>
+                <asp:Label runat="server" AssociatedControlID="txtApellido" class="form-label">Apellido</asp:Label>
 
                 <asp:TextBox ID="txtApellido"
                     runat="server"
@@ -40,7 +40,7 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">DNI</label>
+                <asp:Label runat="server" AssociatedControlID="txtDni" class="form-label">DNI</asp:Label>
 
               <asp:TextBox
                    ID="txtDni"
@@ -53,7 +53,7 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Teléfono</label>
+                <asp:Label runat="server" AssociatedControlID="txtTelefono" class="form-label">Teléfono</asp:Label>
 
                 <asp:TextBox ID="txtTelefono"
                     runat="server"
@@ -62,7 +62,7 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Email</label>
+                <asp:Label runat="server" AssociatedControlID="txtEmail" class="form-label">Email</asp:Label>
 
                 <asp:TextBox ID="txtEmail"
                     runat="server"
@@ -72,9 +72,9 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">
+                <asp:Label runat="server" AssociatedControlID="txtFechaNac" class="form-label">
                     Fecha de nacimiento
-                </label>
+                </asp:Label>
 
                 <asp:TextBox ID="txtFechaNac"
                     runat="server"
@@ -83,9 +83,9 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">
+                <asp:Label runat="server" AssociatedControlID="Planpago" class="form-label">
                     Plan de pago
-                </label>
+                </asp:Label>
 
                 <asp:DropDownList ID="Planpago"
                     runat="server"

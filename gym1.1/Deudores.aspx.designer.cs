@@ -13,6 +13,9 @@ namespace gym1._1
 
     public partial class Deudores
     {
+        protected global::System.Web.UI.WebControls.Panel buscadorDeudores;
+        protected global::System.Web.UI.WebControls.TextBox txtBuscarDeudores;
+        protected global::System.Web.UI.WebControls.Button btnBuscarDeudores;
 
         /// <summary>
         /// Control pnlMsg.

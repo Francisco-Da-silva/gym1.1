@@ -49,9 +49,9 @@
 
             <div class="mb-3">
 
-                <label class="form-label">
+                <asp:Label runat="server" AssociatedControlID="txtPassword" class="form-label">
                     Nueva contraseña
-                </label>
+                </asp:Label>
 
                 <asp:TextBox
                     ID="txtPassword"
@@ -64,9 +64,9 @@
 
             <div class="mb-3">
 
-                <label class="form-label">
+                <asp:Label runat="server" AssociatedControlID="txtRepetirPassword" class="form-label">
                     Repetir contraseña
-                </label>
+                </asp:Label>
 
                 <asp:TextBox
                     ID="txtRepetirPassword"

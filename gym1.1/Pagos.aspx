@@ -21,7 +21,7 @@
                 <div class="client-search-panel p-3 w-100" style="max-width: 720px;">
                     <div class="row g-3 align-items-center">
                         <div class="col-lg-8">
-                            <label for="paymentClientSearch" class="form-label text-success fw-semibold mb-2">Buscar cliente</label>
+                            <asp:Label runat="server" AssociatedControlID="ddlMesPago" class="form-label text-success fw-semibold mb-2">Buscar cliente</label>
                             <div class="client-search-box">
                                 <i class="bi bi-search"></i>
                                 <input id="paymentClientSearch"
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <div id="paymentClientSuggestions" class="client-suggestions mt-3" aria-label="Sugerencias de clientes"></div>
+                    <div id="paymentClientSuggestions" class="client-suggestions mt-3" aria-label="Sugerencias de clientes" aria-live="polite"></div>
                     <div id="paymentClientEmptySearchState" class="empty-search-state p-3 mt-3 text-center">
                         <i class="bi bi-search d-block fs-3 text-success mb-2"></i>
                         No se encontraron clientes con esa búsqueda.
@@ -62,24 +62,24 @@
 
             <!-- Periodo -->
             <div class="col-md-3">
-                <label class="form-label">Mes a pagar</label>
+                <label class="form-label">Mes a pagar</asp:Label>
                 <asp:DropDownList ID="ddlMesPago" runat="server" CssClass="form-select" />
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Año</label>
+                <asp:Label runat="server" AssociatedControlID="ddlAnioPago" class="form-label">Año</asp:Label>
                 <asp:DropDownList ID="ddlAnioPago" runat="server" CssClass="form-select" />
             </div>
 
             <!-- Monto -->
             <div class="col-md-3">
-                <label class="form-label">Monto</label>
+                <asp:Label runat="server" AssociatedControlID="txtMonto" class="form-label">Monto</asp:Label>
                 <asp:TextBox ID="txtMonto" runat="server" CssClass="form-control" />
             </div>
 
             <!-- Observación -->
             <div class="col-md-9">
-                <label class="form-label">Observación (opcional)</label>
+                <asp:Label runat="server" AssociatedControlID="txtObs" class="form-label">Observación (opcional)</asp:Label>
                 <asp:TextBox ID="txtObs" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2"  MaxLength="200" />
             </div>
 
@@ -90,7 +90,7 @@
                 CssClass="btn btn-outline-light btn-sm"
                 OnClick="btnLimpiar_Click" />
 
-            <asp:Button ID="btnRegistrar" runat="server" Text="Registrar pago"
+            <asp:Button ID="btnRegistrar" data-submit-once="true" runat="server" Text="Registrar pago"
                 CssClass="btn btn-success px-4"
                 OnClick="btnRegistrar_Click" />
         </div>
@@ -140,7 +140,7 @@
             <span>Estado mensual del año</span>
         </h5>
 
-        <asp:GridView ID="gvEstadoAnual" runat="server"
+        <div class="table-responsive" tabindex="0" role="region" aria-label="Estado mensual"><asp:GridView ID="gvEstadoAnual" runat="server"
             CssClass="table table-bordered table-striped mb-4 text-center align-middle"
             AutoGenerateColumns="False"
             EmptyDataText="Seleccioná un cliente para ver el estado mensual."
@@ -162,7 +162,7 @@
                 <asp:BoundField DataField="Diciembre" HeaderText="Dic" />
             </Columns>
 
-        </asp:GridView>
+        </asp:GridView></div>
 
         <hr class="border-secondary" />
 
@@ -171,7 +171,7 @@
             <span>Historial de pagos del cliente</span>
         </h5>
 
-        <asp:GridView ID="gvPagos" runat="server"
+        <div class="table-responsive" tabindex="0" role="region" aria-label="Historial de pagos"><asp:GridView ID="gvPagos" runat="server"
             CssClass="table table-bordered table-striped mb-0"
             AutoGenerateColumns="False"
             EmptyDataText="Este cliente aún no tiene pagos registrados."
@@ -193,7 +193,7 @@
                 </asp:TemplateField>
             </Columns>
 
-        </asp:GridView>
+        </asp:GridView></div>
     </div>
 
     <script>
@@ -261,6 +261,7 @@
 
             searchInput.addEventListener('input', applySearch);
             searchInput.addEventListener('keydown', event => {
+                if (event.key === 'Enter' && suggestions.querySelector('button')) { event.preventDefault(); suggestions.querySelector('button').click(); }
                 if (event.key === 'Escape') {
                     searchInput.value = '';
                     applySearch();

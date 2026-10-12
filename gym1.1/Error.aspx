@@ -13,33 +13,10 @@
 
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
 
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f4f6f9;
-        }
-
-        .error-card {
-            max-width: 550px;
-            width: 100%;
-            padding: 35px;
-            border-radius: 15px;
-            background-color: white;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
-            text-align: center;
-        }
-
-        .error-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
-        }
-    </style>
+    <link href="Content/Site.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="auth-page">
     <form id="form1" runat="server">
 
         <div class="error-card">

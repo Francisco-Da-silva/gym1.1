@@ -1,102 +1,5 @@
-﻿<%@ Page Language="C#"
-    AutoEventWireup="true"
-    CodeBehind="CrearAdministrador.aspx.cs"
-    Inherits="gym1._1.CrearAdministrador" %>
-
-<!DOCTYPE html>
-<html lang="es">
-<head runat="server">
-    <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1" />
-
-    <title>Crear cuenta - Gym Manager</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-          rel="stylesheet" />
-
-    <style>
-        body {
-            min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top left,
-                    #22c55e 0,
-                    #0f172a 38%,
-                    #020617 100%
-                );
-        }
-
-        .registro-card {
-            width: 100%;
-            max-width: 760px;
-            padding: 38px;
-            border-radius: 22px;
-            background: rgba(2, 6, 23, .96);
-            border: 1px solid rgba(255, 255, 255, .1);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .55);
-        }
-
-        .registro-icon {
-            width: 66px;
-            height: 66px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #22c55e;
-            color: #020617;
-            font-size: 30px;
-        }
-
-        .seccion-titulo {
-            color: #22c55e;
-            font-size: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            margin-bottom: 18px;
-        }
-
-        .form-control {
-            color: white;
-            background: #0f172a;
-            border-color: #334155;
-        }
-
-        .form-control:focus {
-            color: white;
-            background: #0f172a;
-            border-color: #22c55e;
-            box-shadow: 0 0 0 .25rem rgba(34, 197, 94, .2);
-        }
-
-        .form-control::placeholder {
-            color: #64748b;
-        }
-
-        .separador {
-            border-color: rgba(255, 255, 255, .12);
-        }
-
-        .login-link {
-            color: #22c55e;
-            text-decoration: none;
-        }
-
-        .login-link:hover {
-            color: #4ade80;
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body>
-<form id="form1" runat="server">
+﻿<%@ Page Title="Registrar gimnasio" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CrearAdministrador.aspx.cs" Inherits="gym1._1.CrearAdministrador" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server"><div class="main-card p-4">
 
     <div class="container min-vh-100 d-flex
                 justify-content-center align-items-center py-5">
@@ -107,7 +10,7 @@
                 <i class="bi bi-building-add"></i>
             </div>
 
-            <h2 class="text-white text-center mb-1">
+            <h2 class=" text-center mb-1">
                 Crear cuenta
             </h2>
 
@@ -132,9 +35,9 @@
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtNombreGimnasio" class="form-label ">
                         Nombre del gimnasio
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtNombreGimnasio"
                         runat="server"
@@ -144,9 +47,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtEmailGimnasio" class="form-label ">
                         Correo del gimnasio
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtEmailGimnasio"
                         runat="server"
@@ -157,9 +60,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtTelefono" class="form-label ">
                         Teléfono
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtTelefono"
                         runat="server"
@@ -180,9 +83,9 @@
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtNombre" class="form-label ">
                         Nombre del administrador
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtNombre"
                         runat="server"
@@ -192,9 +95,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtEmail" class="form-label ">
                         Correo para iniciar sesión
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtEmail"
                         runat="server"
@@ -205,9 +108,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtPassword" class="form-label ">
                         Contraseña
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtPassword"
                         runat="server"
@@ -218,9 +121,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label text-light">
+                    <asp:Label runat="server" AssociatedControlID="txtRepetirPassword" class="form-label ">
                         Repetir contraseña
-                    </label>
+                    </asp:Label>
 
                     <asp:TextBox ID="txtRepetirPassword"
                         runat="server"
@@ -252,6 +155,4 @@
         </div>
     </div>
 
-</form>
-</body>
-</html>
+</div></asp:Content>

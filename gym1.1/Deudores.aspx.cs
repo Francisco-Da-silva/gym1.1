@@ -82,6 +82,8 @@ namespace gym1._1
         // CARGAR DEUDORES
         // =====================================================
 
+        protected void btnBuscarDeudores_Click(object sender, EventArgs e) { CargarDeudores(); }
+
         private void CargarDeudores()
         {
             try
@@ -92,6 +94,13 @@ namespace gym1._1
                     );
 
                 AgregarDatosMesesAdeudados(dt);
+                string busqueda=txtBuscarDeudores.Text.Trim();
+                var filtrados=dt.Clone();
+                var filas=System.Linq.Enumerable.Where(dt.AsEnumerable(), r => busqueda.Length==0 ||
+                    (Convert.ToString(r["Nombre"])+" "+Convert.ToString(r["Apellido"])+" "+Convert.ToString(r["DNI"])).IndexOf(busqueda,StringComparison.CurrentCultureIgnoreCase)>=0);
+                foreach(var fila in System.Linq.Enumerable.OrderBy(filas, r => Convert.ToDateTime(r["Vencimiento"]==DBNull.Value ? r["FechaAlta"] : r["Vencimiento"]))) filtrados.ImportRow(fila);
+                dt=filtrados;
+
 
                 gvDeudores.DataSource = dt;
                 gvDeudores.DataBind();

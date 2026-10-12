@@ -25,6 +25,21 @@ namespace gym1._1
             {
                 InicializarPantalla();
                 CargarOpcionesPeriodoPago();
+                int cliente;
+                if (Request.QueryString["cliente"] != null)
+                {
+                    if (int.TryParse(Request.QueryString["cliente"], out cliente) && SP.ClientePertenece(IdGimnasioActual, cliente))
+                    {
+                        hdnIdClienteSeleccionado.Value=cliente.ToString();
+                        var datos=SP.ListarClientes(IdGimnasioActual);
+                        foreach (DataRow fila in datos.Rows)
+                            if (Convert.ToInt32(fila["IdCliente"])==cliente)
+                                hdnTextoClienteSeleccionado.Value=Convert.ToString(fila["Apellido"])+", "+Convert.ToString(fila["Nombre"])+" - "+Convert.ToString(fila["DNI"]);
+                        btnSeleccionarCliente_Click(this,EventArgs.Empty);
+                    }
+                    else MostrarMensaje("No se pudo validar el cliente seleccionado.", "warning");
+                }
+
             }
         }
 

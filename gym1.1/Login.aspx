@@ -15,57 +15,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
           rel="stylesheet" />
 
-    <style>
-        body {
-            min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top left,
-                    #22c55e 0,
-                    #0f172a 38%,
-                    #020617 100%
-                );
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 430px;
-            padding: 38px;
-            border-radius: 22px;
-            background: rgba(2, 6, 23, .95);
-            border: 1px solid rgba(255, 255, 255, .1);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .55);
-        }
-
-        .login-icon {
-            width: 66px;
-            height: 66px;
-            margin: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #22c55e;
-            color: #020617;
-            font-size: 30px;
-        }
-
-        .form-control {
-            color: white;
-            background: #0f172a;
-            border-color: #334155;
-        }
-
-        .form-control:focus {
-            color: white;
-            background: #0f172a;
-            border-color: #22c55e;
-            box-shadow: 0 0 0 .25rem rgba(34, 197, 94, .2);
-        }
-    </style>
+    <link href="Content/Site.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="auth-page">
 <form id="form1" runat="server">
 
     <div class="container min-vh-100 d-flex
@@ -77,7 +30,7 @@
                 <i class="bi bi-person-fill-lock"></i>
             </div>
 
-            <h2 class="text-white text-center mb-1">
+            <h2 class=" text-center mb-1">
                 Gym Manager
             </h2>
 
@@ -94,9 +47,9 @@
             </asp:Panel>
 
             <div class="mb-3">
-                <label class="form-label text-light">
+                <asp:Label runat="server" AssociatedControlID="txtEmail" class="form-label ">
                     Correo electrónico
-                </label>
+                </asp:Label>
 
                 <asp:TextBox ID="txtEmail"
                     runat="server"
@@ -107,9 +60,9 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label text-light">
+                <asp:Label runat="server" AssociatedControlID="txtPassword" class="form-label ">
                     Contraseña
-                </label>
+                </asp:Label>
 
                 <asp:TextBox ID="txtPassword"
                     runat="server"

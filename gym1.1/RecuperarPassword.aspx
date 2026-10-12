@@ -51,9 +51,9 @@
 
             <div class="mb-3">
 
-                <label class="form-label">
+                <asp:Label runat="server" AssociatedControlID="txtEmail" class="form-label">
                     Correo electrónico
-                </label>
+                </asp:Label>
 
                 <asp:TextBox
                     ID="txtEmail"

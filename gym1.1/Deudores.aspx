@@ -39,6 +39,10 @@
 
             </asp:Panel>
 
+            <asp:Panel ID="buscadorDeudores" runat="server" DefaultButton="btnBuscarDeudores" CssClass="client-search-panel p-3 mb-4">
+                <asp:Label runat="server" AssociatedControlID="txtBuscarDeudores" CssClass="form-label" Text="Buscar deudor por nombre, apellido o DNI" />
+                <div class="d-flex flex-wrap gap-2"><asp:TextBox ID="txtBuscarDeudores" runat="server" MaxLength="100" CssClass="form-control" style="flex:1;min-width:180px" /><asp:Button ID="btnBuscarDeudores" runat="server" Text="Buscar" OnClick="btnBuscarDeudores_Click" CssClass="btn btn-outline-success" /></div>
+            </asp:Panel>
             <!-- DATOS DEL PAGO -->
             <div class="border rounded-3 p-3 mb-4">
 
@@ -51,9 +55,9 @@
 
                     <div class="col-md-3">
 
-                        <label class="form-label">
+                        <asp:Label runat="server" AssociatedControlID="ddlMesPago" class="form-label">
                             Mes a pagar
-                        </label>
+                        </asp:Label>
 
                         <asp:DropDownList
                             ID="ddlMesPago"
@@ -65,9 +69,9 @@
 
                     <div class="col-md-3">
 
-                        <label class="form-label">
+                        <asp:Label runat="server" AssociatedControlID="ddlAnioPago" class="form-label">
                             Año
-                        </label>
+                        </asp:Label>
 
                         <asp:DropDownList
                             ID="ddlAnioPago"
@@ -79,9 +83,9 @@
 
                     <div class="col-md-3">
 
-                        <label class="form-label">
+                        <asp:Label runat="server" AssociatedControlID="txtMonto" class="form-label">
                             Monto
-                        </label>
+                        </asp:Label>
 
                         <asp:TextBox
                             ID="txtMonto"
@@ -94,9 +98,9 @@
 
                     <div class="col-md-3">
 
-                        <label class="form-label">
+                        <asp:Label runat="server" AssociatedControlID="txtObs" class="form-label">
                             Observación
-                        </label>
+                        </asp:Label>
 
                         <asp:TextBox
                             ID="txtObs"

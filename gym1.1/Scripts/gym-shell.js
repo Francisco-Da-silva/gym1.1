@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
   var root = document.documentElement;
   var sidebar = document.getElementById('gym-sidebar');
@@ -51,5 +51,16 @@
     }
   });
   mobile.addEventListener('change', function () { dismiss(false); });
+  var form = toggle.form;
+  if (form) form.addEventListener('submit', function (event) {
+    if (event.defaultPrevented) return;
+    var submitter = event.submitter || document.activeElement;
+    if (!submitter || submitter.getAttribute('data-submit-once') !== 'true') return;
+    if (form.getAttribute('aria-busy') === 'true') { event.preventDefault(); return; }
+    form.setAttribute('aria-busy','true');
+    // Keep the submitter enabled until its name/value has been serialized by the browser.
+    window.setTimeout(function () { submitter.disabled=true; submitter.value='Registrando…'; }, 0);
+  });
+  window.addEventListener('pageshow', function () { if (form) { form.removeAttribute('aria-busy'); form.querySelectorAll('[data-submit-once]').forEach(function (button) { button.disabled=false; button.value='Registrar pago'; }); } });
   sync();
 })();
