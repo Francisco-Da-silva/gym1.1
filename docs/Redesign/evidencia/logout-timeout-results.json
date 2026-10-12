@@ -1,0 +1,28 @@
+[
+  {
+    "test": "Consulta SQL de usuarios agota tiempo bajo bloqueo QA",
+    "passed": true
+  },
+  {
+    "test": "CSRF inválido rechazado sin esperar SQL",
+    "passed": true
+  },
+  {
+    "test": "Logout gimnasio con Usuarios bloqueada",
+    "passed": true,
+    "seconds": 0.015
+  },
+  {
+    "test": "Sesión invalidada después de logout 0",
+    "passed": true
+  },
+  {
+    "test": "Logout superadmin con Usuarios bloqueada",
+    "passed": true,
+    "seconds": 0.016
+  },
+  {
+    "test": "Sesión invalidada después de logout 1",
+    "passed": true
+  }
+]

@@ -22,6 +22,20 @@ namespace gym1._1
                 Response.Redirect("~/Login.aspx", true);
                 return;
             }
+            // Salir no requiere acceso a SQL ni ejecutar el resto del ciclo de página.
+            // Se mantiene CSRF aun si el usuario fue desactivado o SQL no responde.
+            if (Request.HttpMethod == "POST" &&
+                string.Equals(Request.Form["__EVENTTARGET"], "ctl00$btnCerrarSesion", StringComparison.Ordinal))
+            {
+                string tokenSalida = Session["GymCsrf"] as string;
+                if (string.IsNullOrEmpty(tokenSalida) ||
+                    !string.Equals(Request.Form["__GymCsrf"], tokenSalida, StringComparison.Ordinal))
+                    throw new HttpException(403, "Solicitud no válida.");
+                SiteMaster.CerrarSesion(Context);
+                // CompleteRequest no interrumpe el ciclo de vida de WebForms.
+                Response.End();
+                return;
+            }
             string rol = UsuarioDAL.ObtenerRolActivo(idUsuario, idGimnasio);
             if (rol == null)
             {

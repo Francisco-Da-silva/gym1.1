@@ -113,18 +113,23 @@ namespace gym1._1
             object sender,
             EventArgs e)
         {
+            CerrarSesion(Context);
+        }
+
+        internal static void CerrarSesion(HttpContext context)
+        {
             // Eliminamos todos los datos
             // almacenados en la sesión.
-            Session.Clear();
+            context.Session.Clear();
 
-            Session.Abandon();
+            context.Session.Abandon();
 
 
             // ======================================
             // ELIMINAR COOKIE DE SESIÓN
             // ======================================
 
-            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            if (context.Request.Cookies["ASP.NET_SessionId"] != null)
             {
                 HttpCookie cookieSesion =
                     new HttpCookie(
@@ -138,7 +143,7 @@ namespace gym1._1
                 cookieSesion.HttpOnly =
                     true;
 
-                Response.Cookies.Add(
+                context.Response.Cookies.Add(
                     cookieSesion
                 );
             }
@@ -149,13 +154,13 @@ namespace gym1._1
             // EVITAR CACHÉ
             // ======================================
 
-            Response.Cache.SetCacheability(
+            context.Response.Cache.SetCacheability(
                 HttpCacheability.NoCache
             );
 
-            Response.Cache.SetNoStore();
+            context.Response.Cache.SetNoStore();
 
-            Response.Cache.SetExpires(
+            context.Response.Cache.SetExpires(
                 DateTime.UtcNow.AddYears(-1)
             );
 
@@ -164,12 +169,12 @@ namespace gym1._1
             // VOLVER AL LOGIN
             // ======================================
 
-            Response.Redirect(
+            context.Response.Redirect(
                 "~/Login.aspx",
                 false
             );
 
-            Context.ApplicationInstance
+            context.ApplicationInstance
                 .CompleteRequest();
         }
     }
