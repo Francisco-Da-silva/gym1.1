@@ -16,6 +16,7 @@
     var open = root.classList.contains('sidebar-open');
     root.classList.toggle('sidebar-collapsed', !mobile.matches && collapsed);
     sidebar.inert = mobile.matches && !open;
+    document.querySelector('.main-area').inert = mobile.matches && open;
     backdrop.hidden = !mobile.matches || !open;
     toggle.setAttribute('aria-expanded', String(mobile.matches ? open : !collapsed));
     toggle.setAttribute('aria-label', mobile.matches ? (open ? 'Cerrar menú' : 'Abrir menú') : (collapsed ? 'Expandir menú' : 'Contraer menú'));

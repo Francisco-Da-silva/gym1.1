@@ -4,19 +4,21 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="es">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Error - Gym Manager</title>
 
-    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link href="Content/Site.css" rel="stylesheet" />
+<script src="Scripts/gym-theme.js"></script>
 </head>
 
 <body class="auth-page">
+<div class="auth-theme"><button id="theme-toggle" type="button" class="icon-button" aria-label="Activar modo oscuro" aria-pressed="false" hidden><span aria-hidden="true">◐</span></button></div>
     <form id="form1" runat="server">
 
         <div class="error-card">

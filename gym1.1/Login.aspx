@@ -16,9 +16,11 @@
           rel="stylesheet" />
 
     <link href="Content/Site.css" rel="stylesheet" />
+<script src="Scripts/gym-theme.js"></script>
 </head>
 
 <body class="auth-page">
+<div class="auth-theme"><button id="theme-toggle" type="button" class="icon-button" aria-label="Activar modo oscuro" aria-pressed="false" hidden><span aria-hidden="true">◐</span></button></div>
 <form id="form1" runat="server">
 
     <div class="container min-vh-100 d-flex

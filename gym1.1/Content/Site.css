@@ -1,4 +1,4 @@
-﻿/* Gym Manager — Verde Profesional. Colores compartidos por todos los componentes. */
+/* Gym Manager — Verde Profesional. Colores compartidos por todos los componentes. */
 :root {
   --gm-primary: #176B50;
   --gm-sidebar: #142E28;
@@ -12,6 +12,7 @@
   --gm-muted: #52675F;
   --gm-soft: #EDF4F0;
   --gm-on-primary: #FFFFFF;
+  --gm-status-text: #FFFFFF;
   --gm-nav-text: #DDEBE5;
   --gm-nav-muted: #B2C8BE;
   --gm-nav-active: #275143;
@@ -37,13 +38,13 @@ button, .btn { min-height: 44px; }
 .skip-link:focus { transform: none; }
 .layout-root { display: flex; min-height: 100vh; }
 .sidebar-gym { position: sticky; top: 0; width: var(--gm-sidebar-width); height: 100vh; flex: 0 0 var(--gm-sidebar-width); display: flex; flex-direction: column; padding: 1.5rem 1rem; background: var(--gm-sidebar); color: var(--gm-nav-text); overflow-y: auto; }
-.brand { color: var(--gm-on-primary); display: flex; align-items: center; gap: .75rem; text-decoration: none; padding: .35rem .5rem 1.5rem; font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
+.brand { color: var(--gm-nav-text); display: flex; align-items: center; gap: .75rem; text-decoration: none; padding: .35rem .5rem 1.5rem; font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
 .brand-icon { font-size: 1.5rem; width: 32px; flex-shrink: 0; text-align: center; }
 .sidebar-caption { color: var(--gm-nav-muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; padding: 1rem .8rem .5rem; font-weight: 700; }
 .sidebar-gym .nav { gap: .3rem; }
 .sidebar-gym .nav-link { display: flex; align-items: center; gap: .8rem; color: var(--gm-nav-text); border-radius: .65rem; padding: .7rem .85rem; min-height: 46px; font-size: .9rem; white-space: nowrap; }
 .sidebar-gym .nav-link i { font-size: 1.15rem; width: 24px; flex-shrink: 0; text-align: center; }
-.sidebar-gym .nav-link:hover, .sidebar-gym .nav-link.active { background: var(--gm-nav-active); color: var(--gm-on-primary); }
+.sidebar-gym .nav-link:hover, .sidebar-gym .nav-link.active { background: var(--gm-nav-active); color: var(--gm-nav-text); }
 .sidebar-gym .nav-link.active { box-shadow: inset 3px 0 var(--gm-nav-text); font-weight: 650; }
 .sidebar-gym :focus-visible { outline-color: var(--gm-nav-text); }
 .sidebar-account { padding-top: 1.2rem; margin-top: auto; }
@@ -67,9 +68,9 @@ button, .btn { min-height: 44px; }
 .text-secondary, .text-muted { color: var(--gm-muted) !important; }
 .text-warning { color: var(--gm-warning) !important; }
 .text-danger { color: var(--gm-danger) !important; }
-.bg-success { background-color: var(--gm-success) !important; color: var(--gm-on-primary); }
-.bg-warning { background-color: var(--gm-warning) !important; color: var(--gm-on-primary) !important; }
-.bg-danger { background-color: var(--gm-danger) !important; color: var(--gm-on-primary); }
+.bg-success { background-color: var(--gm-success) !important; color: var(--gm-status-text); }
+.bg-warning { background-color: var(--gm-warning) !important; color: var(--gm-status-text) !important; }
+.bg-danger { background-color: var(--gm-danger) !important; color: var(--gm-status-text); }
 .border-success { border-color: var(--gm-border) !important; }
 .btn { border-radius: .6rem; font-weight: 600; padding: .6rem 1rem; }
 .btn-success { --bs-btn-bg: var(--gm-primary); --bs-btn-border-color: var(--gm-primary); --bs-btn-hover-bg: var(--gm-sidebar); --bs-btn-hover-border-color: var(--gm-sidebar); --bs-btn-active-bg: var(--gm-sidebar); --bs-btn-active-border-color: var(--gm-sidebar); --bs-btn-disabled-bg: var(--gm-primary); --bs-btn-disabled-border-color: var(--gm-primary); }
@@ -130,3 +131,30 @@ button, .btn { min-height: 44px; }
 .registro-card { max-width:800px; }
 .login-icon, .registro-icon { color:var(--gm-primary); font-size:2rem; text-align:center; }
 .seccion-titulo { color:var(--gm-primary); font-weight:700; border-bottom:1px solid var(--gm-border); padding:.75rem 0; margin-bottom:1rem; }
+
+/* Grafito Deportivo — preferencia explícita, modo claro predeterminado. */
+[data-bs-theme="dark"] {
+  --gm-bg: #10171D;
+  --gm-sidebar: #0A1015;
+  --gm-surface: #1B252C;
+  --gm-text: #ECF2F4;
+  --gm-border: #303D45;
+  --gm-primary: #B5E548;
+  --gm-muted: #B4C4CD;
+  --gm-soft: #24323B;
+  --gm-on-primary: #10171D;
+  --gm-nav-text: #ECF2F4;
+  --gm-nav-muted: #B4C4CD;
+  --gm-nav-active: #233A31;
+  --gm-warning: #F3BD70;
+  --gm-focus: #B5E548;
+  --gm-shadow: none;
+  color-scheme: dark;
+}
+.btn-success { --bs-btn-color:var(--gm-on-primary); --bs-btn-hover-color:var(--gm-status-text); --bs-btn-active-color:var(--gm-status-text); }
+.btn-outline-success { --bs-btn-hover-color:var(--gm-on-primary); --bs-btn-active-color:var(--gm-status-text); }
+[data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select { border-color:#647783; }
+[data-bs-theme="dark"] .bg-warning { background-color:#B45309 !important; }
+[data-bs-theme="dark"] .text-danger { color:#FF9696 !important; }
+.auth-theme { position:absolute; top:1rem; right:1rem; z-index:10; }
+.auth-page .error-card { margin-top:12vh; }

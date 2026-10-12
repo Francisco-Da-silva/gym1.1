@@ -17,9 +17,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet" />
 
+<link href="Content/Site.css" rel="stylesheet" />
+<script src="Scripts/gym-theme.js"></script>
 </head>
 
-<body class="bg-dark">
+<body class="auth-page">
+<div class="auth-theme"><button id="theme-toggle" type="button" class="icon-button" aria-label="Activar modo oscuro" aria-pressed="false" hidden><span aria-hidden="true">◐</span></button></div>
 
 <form id="form1" runat="server">
 
