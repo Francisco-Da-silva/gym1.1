@@ -1,0 +1,16 @@
+PASS Paginación total25
+PASS Primera página20
+PASS Segunda página5
+PASS Búsqueda DNI
+PASS Búsqueda apellido
+PASS Búsqueda SQL injection literal
+PASS Búsqueda comodín literal
+PASS Búsqueda aislamientoB
+PASS Búsqueda sin resultados
+PASS Dashboard datasets
+PASS Dashboard clientes aislados
+PASS Dashboard pagosB vacío
+PASS Dashboard pagos recientesA
+PASS Dashboard deudaB aislada
+PASS Dashboard suma mensual exacta
+TOTAL 15 FAILED 0

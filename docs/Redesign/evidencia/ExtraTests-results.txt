@@ -1,0 +1,6 @@
+PASS F02 ocho altas concurrentes
+PASS D11 limite -1
+PASS D11 limite 0
+PASS D11 limite 5
+PASS D11 limite 6
+TOTAL 5 FAILED 0

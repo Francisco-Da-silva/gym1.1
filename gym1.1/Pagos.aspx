@@ -21,7 +21,7 @@
                 <div class="client-search-panel p-3 w-100" style="max-width: 720px;">
                     <div class="row g-3 align-items-center">
                         <div class="col-lg-8">
-                            <asp:Label runat="server" AssociatedControlID="ddlMesPago" class="form-label text-success fw-semibold mb-2">Buscar cliente</label>
+                            <label for="paymentClientSearch" class="form-label text-success fw-semibold mb-2">Buscar cliente</label>
                             <div class="client-search-box">
                                 <i class="bi bi-search"></i>
                                 <input id="paymentClientSearch"
@@ -62,7 +62,7 @@
 
             <!-- Periodo -->
             <div class="col-md-3">
-                <label class="form-label">Mes a pagar</asp:Label>
+                <asp:Label runat="server" AssociatedControlID="ddlMesPago" CssClass="form-label">Mes a pagar</asp:Label>
                 <asp:DropDownList ID="ddlMesPago" runat="server" CssClass="form-select" />
             </div>
 

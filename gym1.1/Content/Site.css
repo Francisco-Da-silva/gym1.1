@@ -158,3 +158,5 @@ button, .btn { min-height: 44px; }
 [data-bs-theme="dark"] .text-danger { color:#FF9696 !important; }
 .auth-theme { position:absolute; top:1rem; right:1rem; z-index:10; }
 .auth-page .error-card { margin-top:12vh; }
+
+a:not(.btn):not(.nav-link):not(.brand):not(.skip-link) { color:var(--gm-primary); }

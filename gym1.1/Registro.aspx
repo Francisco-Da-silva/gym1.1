@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master"AutoEventWireup="true"CodeBehind="Registro.aspx.cs"Inherits="gym1._1.Registro" %> <asp:Content ID="Content1" ContentPlaceHolderID="MainContent"
+﻿<%@ Page Title="Registrar clientes" Language="C#" MasterPageFile="~/Site.Master"AutoEventWireup="true"CodeBehind="Registro.aspx.cs"Inherits="gym1._1.Registro" %> <asp:Content ID="Content1" ContentPlaceHolderID="MainContent"
     runat="server">
 
     <h2 class="my-3 d-flex align-items-center gap-2">

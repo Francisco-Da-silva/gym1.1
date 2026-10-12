@@ -33,7 +33,7 @@ for page in ['AdministrarGimnasios.aspx','CrearAdministrador.aspx']:
  r,t=superadmin.req(page);check('Superadmin autorizado '+page,r.url.endswith('/'+page) and 'Ocurrió un error' not in t)
  if page=='AdministrarGimnasios.aspx':check('Listado excluye cuenta administrativa de plataforma','QA Plataforma administrativa' not in t)
 gym=Client();r,t=gym.login('qa-a@example.invalid')
-check('Gimnasio conserva inicio',r.url.endswith('/Default.aspx') and 'Todo tu gimnasio' in t and 'Administración de la plataforma' not in t)
+check('Gimnasio conserva inicio',r.url.endswith('/Default.aspx') and 'Resumen del gimnasio' in t and 'Administración de la plataforma' not in t)
 check('Gimnasio menú operativo',all(p in t for p in ['Pagos','Clientes','Registro','Deudores']) and 'AdministrarGimnasios.aspx' not in t and 'CrearAdministrador.aspx' not in t)
 for page in ['Clientes.aspx','Registro.aspx','Pagos.aspx','Deudores.aspx']:
  r,t=gym.req(page);check('Gimnasio autorizado '+page,r.url.endswith('/'+page) and 'Ocurrió un error' not in t)

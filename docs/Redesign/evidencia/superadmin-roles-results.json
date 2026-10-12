@@ -1,0 +1,122 @@
+[
+  {
+    "test": "Superadmin inicio administrativo",
+    "passed": true
+  },
+  {
+    "test": "Superadmin sin enlaces operativos",
+    "passed": true
+  },
+  {
+    "test": "Superadmin enlaces plataforma y cuenta",
+    "passed": true
+  },
+  {
+    "test": "Resumen de gimnasio activo e inactivo",
+    "passed": true
+  },
+  {
+    "test": "Resumen sin duplicar cuentas ni contar plataforma",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Clientes.aspx",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Clientes",
+    "passed": true
+  },
+  {
+    "test": "Superadmin POST bloqueado antes de eventos Clientes",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Registro.aspx",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Registro",
+    "passed": true
+  },
+  {
+    "test": "Superadmin POST bloqueado antes de eventos Registro",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Pagos.aspx",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Pagos",
+    "passed": true
+  },
+  {
+    "test": "Superadmin POST bloqueado antes de eventos Pagos",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Deudores.aspx",
+    "passed": true
+  },
+  {
+    "test": "Superadmin GET bloqueado Deudores",
+    "passed": true
+  },
+  {
+    "test": "Superadmin POST bloqueado antes de eventos Deudores",
+    "passed": true
+  },
+  {
+    "test": "Superadmin autorizado AdministrarGimnasios.aspx",
+    "passed": true
+  },
+  {
+    "test": "Listado excluye cuenta administrativa de plataforma",
+    "passed": true
+  },
+  {
+    "test": "Superadmin autorizado CrearAdministrador.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio conserva inicio",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio menú operativo",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio autorizado Clientes.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio autorizado Registro.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio autorizado Pagos.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio autorizado Deudores.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio administración denegada AdministrarGimnasios.aspx",
+    "passed": true
+  },
+  {
+    "test": "Gimnasio administración denegada CrearAdministrador.aspx",
+    "passed": true
+  },
+  {
+    "test": "Anónimo sin acceso",
+    "passed": true
+  },
+  {
+    "test": "Logout superadmin",
+    "passed": true
+  }
+]

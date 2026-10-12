@@ -1,0 +1,24 @@
+PASS A02 inexistente
+PASS A04 SQL injection
+PASS A login valido
+PASS Cuenta inactiva
+PASS C01 ListarClientes A
+PASS C01 ListarClientes B
+PASS C03 cliente ajeno sin pagos
+PASS C05 pertenece
+PASS C04 fecha ajena rechazada
+PASS C06 pago ajeno 50001
+PASS D01/D09 INSERT futuro
+PASS D07 decimal exacto
+PASS D02 duplicado 50002
+PASS D13 Deudores actualizado
+PASS D03 ocho envios concurrentes
+PASS F01 cliente INSERT
+PASS F02 DNI duplicado
+PASS G03 fixture sin huerfanos
+PASS G04 fixture sin cruces
+PASS G01 FK compuesto
+PASS G05 fixture sin duplicados
+PASS Reset token consumido una vez
+PASS Eliminar cliente ajeno
+TOTAL 23 FAILED 0
