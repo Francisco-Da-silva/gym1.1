@@ -46,6 +46,7 @@
     <Compile Include="ValidacionDatos.cs" />
     <Compile Include="AppLogger.cs" />
     <Compile Include="ClientesDAL.cs" />
+    <Compile Include="DashboardDAL.cs" />
     <Compile Include="DeudoresDal.cs" />
     <Compile Include="Emailservice.cs" />
     <Compile Include="PagoDAL.cs" />
